@@ -1,0 +1,123 @@
+# Enterprise Retail Competitor Intelligence: Autonomous Hybrid Agentic Platform
+
+[![Architecture](https://img.shields.io/badge/Architecture-Tri--Tier%20Hybrid%20AI-blue.svg)](file:///home/sgp-z/personal-projects/Retail-Comp-Intel-Agentic-Solution/retail_competitor_intelligence_agentic_solution.md)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.141+-009688.svg)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB.svg)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](#)
+
+A high-throughput, low-latency enterprise intelligence platform engineered to autonomously discover competitor assortments, resolve obscured SKU identities, uncover dynamic hidden cart discounts, detect adversarial honeypots and phantom inventory, and generate auditable strategic counter-actions.
+
+---
+
+## 1. Architectural Highlights
+
+The system implements the **Tri-Tier Hybrid Intelligence Paradigm** and 6-stage operational lifecycle:
+
+1. **Tier 1: Deterministic Rule Tier**
+   - Exact GTIN/UPC/EAN Checksum Modulo-10 resolution ($\tau = 1.0$)
+   - Hard brand gates and category boundary filters
+   - Adversarial honeypot payload quarantine
+
+2. **Tier 2: Classical Machine Learning Tier**
+   - High-throughput Multimodal Bi-Encoder ($\vec{E}_{prod} = \alpha \vec{E}_{text} + \beta \vec{E}_{vis} + \gamma \vec{E}_{attr}$)
+   - Approximate Nearest Neighbor (ANN) candidate retrieval
+   - Neural Cross-Encoder pairwise scoring ($\tau \ge 0.92$ auto-commit, $0.65 \le \tau < 0.92$ agentic escalation, $<0.65$ reject/HITL)
+   - Isolation Forest anomaly detection for predatory pricing and repricer oscillation
+
+3. **Tier 3: Multi-Agentic AI Tier (Plan-Execute-Reflect-Report)**
+   - **Supervisor Agent**: Master decomposition, task scheduling, convergence budgeting
+   - **Matcher Agent**: Ambiguity arbitration, private label OEM correlation via Retail Knowledge Graph, packaging OCR inspection
+   - **Promo Agent**: Sandboxed shopper flow simulating checkout basket discounts, digital coupon clipping, and MAP evasion detection
+   - **Strategy Agent**: Causal intent hypothesis (predatory undercutting vs inventory liquidation vs phantom lure), revenue impact modeling, and gross margin protection
+   - **Reflection Guard**: 4-Tier Hierarchy of Truth enforcement (Review Imagery > Spec Tables > PDP Hero > Marketing Titles)
+
+4. **Tier 4: Human-in-the-Loop (HITL) Gatekeeper**
+   - Closed-loop feedback collection feeding back into MLOps drift radar and retraining
+
+---
+
+## 2. Decoupled Data Engineering & MLOps / LLMOps
+
+- **Data Engineering**:
+  - `src/data_engineering/ingestion/`: Headless crawler simulation, honeypot isolation, phantom inventory verification.
+  - `src/data_engineering/normalization/`: Canonical GTIN-14 padding, metric/imperial conversions, Global Product Classification (GPC) ontology alignment.
+  - `src/data_engineering/feature_store/`: Multimodal representation generator with category-calibrated weights ($\alpha, \beta, \gamma$).
+  - `src/data_engineering/stream/`: Async broker with exponential backoff, dead-letter queue (DLQ), and queue-decoupled backpressure.
+
+- **MLOps**:
+  - `src/mlops/drift_radar.py`: Population Stability Index (PSI) for covariate shift, Wasserstein Distance (Earth Mover's Distance) for embedding drift, Page-Hinkley test for concept drift.
+  - `src/mlops/validation.py`: Strict data contracts.
+  - `src/mlops/registry.py`: Artifact and version registry.
+
+- **LLMOps**:
+  - `src/llmops/prompts.py`: Versioned prompt templates for all agents.
+  - `src/llmops/guardrails.py`: Faithfulness (Groundedness), Context Precision/Recall, Hallucination Rate.
+  - `src/llmops/golden_eval.py`: Golden Benchmark Set evaluation runner testing 6 challenge classes.
+
+---
+
+## 3. Comprehensive 5-Plane Metrics Suite
+
+Live calculation across all 5 operational planes:
+1. **Business Impact**: Time-to-Discovery (TTD), Assortment Coverage Ratio, Gross Margin Protected ($), Opportunity Capture Velocity.
+2. **Agentic Reasoning**: Plan Optimality Ratio, Tool Selection Accuracy, Self-Correction Convergence Rate, Arbitration Escalation Rate.
+3. **LLM Engine & RAG Quality**: Faithfulness Score, Context Precision, Context Recall, Hallucination Rate.
+4. **Classical ML Performance**: Recall@5, PR-AUC, F1-Score, Embedding Space Alignment, PSI, Wasserstein Distance.
+5. **Infrastructure & System**: P50/P95/P99 End-to-End Latency, P99 Retrieval Latency, Throughput (SKUs/sec), Scrape Reliability Index, Cost per Monitored SKU.
+
+---
+
+## 4. Quick Start & Execution
+
+### Setup Environment
+```bash
+# Initialize virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+make install
+```
+
+### Launch Development Server
+```bash
+make run
+# Or directly:
+.venv/bin/uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Open your browser at `http://localhost:8000/` to access the glassmorphic Causal War Room and Multi-Agent Execution Mesh.
+
+### Run Automated Tests
+```bash
+# Run all tests with coverage
+make test
+
+# Run specific sub-suites
+make test-unit
+make test-integration
+make test-edge
+make test-perf
+```
+
+### Run Golden Benchmark Suite
+```bash
+make eval
+```
+
+---
+
+## 5. Dual-Stack Configuration (Open Stack & GCP)
+
+Switch between local open stack and Google Cloud Platform via `.env`:
+```env
+# Open Stack (Default local development)
+EXECUTION_MODE=open_stack
+
+# GCP Native (Production Cloud Deployment)
+EXECUTION_MODE=gcp
+VERTEX_PROJECT_ID=my-gcp-retail-project
+VERTEX_LOCATION=us-central1
+GCP_PUBSUB_TOPIC_INGESTION=projects/my-gcp-retail-project/topics/competitor-raw-ingest
+GCP_BIGQUERY_DATASET=retail_competitive_intelligence
+GCP_SPANNER_INSTANCE=retail-graph-instance
+```
