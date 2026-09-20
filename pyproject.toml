@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retail-comp-intel-agentic"
+version = "1.1.0"
+description = "Enterprise Retail Competitor Intelligence: Autonomous Hybrid Agentic Solution"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Retail AI & Merchandising Intelligence Engineering", email = "retail-ai@enterprise.internal"}
+]
+keywords = [
+    "retail-intelligence",
+    "competitor-pricing",
+    "multi-agent",
+    "hybrid-ai",
+    "mlops",
+    "llmops",
+    "gcp",
+    "fastapi"
+]
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "scipy>=1.12.0",
+    "scikit-learn>=1.4.0",
+    "networkx>=3.2.0",
+    "structlog>=24.1.0",
+    "tenacity>=8.2.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.27.0",
+    "jinja2>=3.1.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "httpx2>=0.27.0",
+]
+
+gcp = [
+    "google-cloud-pubsub>=2.19.0",
+    "google-cloud-storage>=2.14.0",
+    "google-cloud-bigquery>=3.17.0",
+    "google-genai>=1.0.0",
+]
+
+ann = [
+    "hnswlib>=0.8.0",
+]
+
+[tool.setuptools.packages.find]
+# Packages are discovered from the src/ directory
+where = ["src"]
+include = ["retail_intel*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+# src/ on pythonpath so `import retail_intel` resolves without editable install
+pythonpath = ["src"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "edge_case: Edge case matrix tests",
+    "performance: Latency and throughput SLA benchmark tests",
+]

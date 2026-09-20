@@ -1,0 +1,30 @@
+# Category-specific multimodal weight calibration (alpha=text, beta=visual, gamma=attributes)
+# These weights are loaded at startup and override the defaults in config.py if this file is
+# explicitly referenced via the RETAIL_INTEL_CATEGORY_WEIGHTS_PATH environment variable.
+# Weights must sum to 1.0 per category.
+
+categories:
+  apparel:
+    alpha: 0.25   # Title/description weight (brand claims less reliable for apparel)
+    beta: 0.55    # Visual weight dominant — color, silhouette, cut
+    gamma: 0.20   # Structured attributes (size, material)
+
+  electronics:
+    alpha: 0.35
+    beta: 0.25
+    gamma: 0.40   # Spec table dominant — MHz, resolution, latency
+
+  grocery:
+    alpha: 0.40   # Product name and brand highly predictive
+    beta: 0.20
+    gamma: 0.40   # Nutrition/volume/UPC parsing critical
+
+  hardware:
+    alpha: 0.20
+    beta: 0.20
+    gamma: 0.60   # Torque, RPM, voltage spec tables are authoritative
+
+  furniture:
+    alpha: 0.30
+    beta: 0.45    # Aesthetic/form factor visuals dominant
+    gamma: 0.25
