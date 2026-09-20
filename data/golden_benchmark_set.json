@@ -1,0 +1,82 @@
+[
+  {
+    "benchmark_id": "BENCH-001",
+    "competitor_sku": "APX-AURA-99",
+    "expected_target_sku": "INT-EL-001",
+    "expected_match_type": "EXACT_MATCH",
+    "expected_confidence_min": 0.95,
+    "challenge_class": "EXACT_IDENTIFIER_MATCH",
+    "resolution_tier": "TIER_1_DETERMINISTIC",
+    "notes": "GTIN parity should resolve immediately in deterministic tier without LLM overhead."
+  },
+  {
+    "benchmark_id": "BENCH-002",
+    "competitor_sku": "ZEN-TV-65-OLED",
+    "expected_target_sku": "INT-EL-002",
+    "expected_match_type": "DIRECT_SUBSTITUTE",
+    "expected_confidence_min": 0.88,
+    "challenge_class": "BORDERLINE_SIMILARITY_COUPON",
+    "resolution_tier": "TIER_3_AGENTIC",
+    "notes": "No GTIN, borderline vector similarity, promo agent clips $150 coupon + cart discount."
+  },
+  {
+    "benchmark_id": "BENCH-003",
+    "competitor_sku": "APX-COF-3PK-AMBIG",
+    "expected_target_sku": "INT-GROC-101",
+    "expected_match_type": "EXACT_MATCH",
+    "expected_confidence_min": 0.85,
+    "challenge_class": "DECEPTIVE_MULTIPACK",
+    "resolution_tier": "TIER_3_AGENTIC",
+    "notes": "Title claims 3-pack but unit price and OCR inspection reveal single 12oz bag. Match to 1x 12oz SKU."
+  },
+  {
+    "benchmark_id": "BENCH-004",
+    "competitor_sku": "NOV-CHAIR-ERGOPRO",
+    "expected_target_sku": "INT-HOME-201",
+    "expected_match_type": "EQUIVALENT_PRIVATE_LABEL",
+    "expected_confidence_min": 0.90,
+    "challenge_class": "PRIVATE_LABEL_OEM",
+    "resolution_tier": "TIER_3_AGENTIC",
+    "notes": "Shared Dongguan OEM factory and patent number prove identical physical manufacture."
+  },
+  {
+    "benchmark_id": "BENCH-005",
+    "competitor_sku": "TTN-DRILL-PHANTOM",
+    "expected_target_sku": "INT-HOME-202",
+    "expected_match_type": "UNFULFILLED_PHANTOM",
+    "expected_confidence_min": 0.92,
+    "challenge_class": "PHANTOM_STOCK",
+    "resolution_tier": "TIER_3_AGENTIC",
+    "notes": "Price is 50% below cost, inventory lead time >60 days; isolated from automated dynamic repricer."
+  },
+  {
+    "benchmark_id": "BENCH-006",
+    "competitor_sku": "ZEN-HONEYPOT-99",
+    "expected_target_sku": null,
+    "expected_match_type": "HONEYPOT_TRAP",
+    "expected_confidence_min": 0.95,
+    "challenge_class": "ADVERSARIAL_HONEYPOT",
+    "resolution_tier": "TIER_1_DETERMINISTIC",
+    "notes": "Flagged as honeypot scraper trap and discarded before contaminating matching index."
+  },
+  {
+    "benchmark_id": "BENCH-007",
+    "competitor_sku": "ACT-RUN-AERO10",
+    "expected_target_sku": "INT-APP-301",
+    "expected_match_type": "DIRECT_SUBSTITUTE",
+    "expected_confidence_min": 0.86,
+    "challenge_class": "TAXONOMY_DISPARITY",
+    "resolution_tier": "TIER_2_CLASSICAL_ML",
+    "notes": "Disparate category mapped to GPC canonical ontology before vector matching."
+  },
+  {
+    "benchmark_id": "BENCH-008",
+    "competitor_sku": "APX-CLASH-NORDIC",
+    "expected_target_sku": "INT-APP-302",
+    "expected_match_type": "CONTRADICTORY_LISTING",
+    "expected_confidence_min": 0.85,
+    "challenge_class": "MULTIMODAL_INFORMATION_CLASH",
+    "resolution_tier": "TIER_3_AGENTIC",
+    "notes": "Title claims 2026 model but review images & specs indicate 2024 clearance unit. Escalated to HITL."
+  }
+]
