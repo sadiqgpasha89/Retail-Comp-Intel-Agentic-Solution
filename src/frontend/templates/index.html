@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURORA RETAIL INTEL | Enterprise Competitor Intelligence & Autonomous Pricing Platform</title>
+  <meta name="description" content="Autonomous Retail Competitor Intelligence: 20,000+ Data Points, 48 Competitors, 10 Categories, and C-Suite Merchandising Action Directives.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- TOP EXECUTIVE NAVIGATION & MODE SWITCHER -->
+    <header class="app-header" id="app-header">
+      <div class="brand-section">
+        <div class="brand-logo-container">
+          <div class="brand-glow-orb"></div>
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1 class="brand-title">AURORA <span class="gradient-text">INTEL</span></h1>
+          <span class="brand-subtitle">Autonomous Enterprise Retail Competitor Intelligence Platform</span>
+        </div>
+      </div>
+
+      <!-- MAIN / TELEMETRY MODE SELECTOR -->
+      <div class="dashboard-mode-selector">
+        <button class="mode-pill-btn active" id="btn-mode-stakeholder" onclick="switchDashboardMode('stakeholder')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pill-icon">
+            <path d="M20 7h-9M14 17H5M17 12H3"/><circle cx="17" cy="7" r="3"/><circle cx="9" cy="17" r="3"/><circle cx="19" cy="12" r="3"/>
+          </svg>
+          Executive Stakeholder View
+        </button>
+        <button class="mode-pill-btn" id="btn-mode-telemetry" onclick="switchDashboardMode('telemetry')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pill-icon">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          System & MLOps Telemetry Hub
+        </button>
+      </div>
+
+      <!-- LIVE ENTERPRISE SCALE BADGES -->
+      <div class="header-telemetry-bar">
+        <div class="telemetry-pill">
+          <span class="telemetry-label">SCALE:</span>
+          <span class="telemetry-value text-cyan" id="hdr-scale-count">20,000+ Pts</span>
+        </div>
+        <div class="telemetry-pill">
+          <span class="telemetry-label">COMPETITORS:</span>
+          <span class="telemetry-value text-green" id="hdr-comp-count">48 Retailers</span>
+        </div>
+        <div class="telemetry-pill">
+          <span class="telemetry-label">CATEGORIES:</span>
+          <span class="telemetry-value text-purple" id="hdr-cat-count">10 Sectors</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-tour" id="btn-executive-tour" onclick="startExecutiveTour()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+          </svg>
+          Executive Demo Tour
+        </button>
+        <button class="btn btn-primary btn-glow" id="btn-run-full-pipeline" onclick="triggerFullPipelineWorkflow()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Run Full Pipeline
+        </button>
+      </div>
+    </header>
+
+    <!-- FULL PIPELINE EXECUTION MODAL -->
+    <div class="modal-backdrop" id="pipeline-modal" style="display:none;">
+      <div class="pipeline-modal-card">
+        <div class="pipeline-modal-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="pipeline-spinner"></div>
+            <div>
+              <h3 style="color:#fff; font-size:1.1rem; font-family:var(--font-display);">Executing End-to-End Retail Intelligence Pipeline</h3>
+              <p style="color:var(--text-secondary); font-size:0.75rem;">Processing 20,000+ data points across 48 competitors & 10 retail categories</p>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-xs" onclick="closePipelineModal()">✕</button>
+        </div>
+
+        <div class="pipeline-stages-list mt-16" id="pipeline-modal-stages">
+          <div class="stage-step" id="p-step-1">
+            <span class="step-indicator">1</span>
+            <div class="step-content">
+              <strong>Stage 1: Perimeter Discovery</strong>
+              <span>Mapping 48 retail competitor domains & category sitemaps...</span>
+            </div>
+            <span class="step-status text-cyan">In Progress</span>
+          </div>
+
+          <div class="stage-step" id="p-step-2">
+            <span class="step-indicator">2</span>
+            <div class="step-content">
+              <strong>Stage 2: Multimodal Ingestion</strong>
+              <span>Harvesting DOM, pricing coupons, & stock availability across 20,000+ records...</span>
+            </div>
+            <span class="step-status text-muted">Pending</span>
+          </div>
+
+          <div class="stage-step" id="p-step-3">
+            <span class="step-indicator">3</span>
+            <div class="step-content">
+              <strong>Stage 3: Entity Resolution & Vector Indexing</strong>
+              <span>Harmonizing GTINs, Universal GPC taxonomy, & HNSW vector embeddings...</span>
+            </div>
+            <span class="step-status text-muted">Pending</span>
+          </div>
+
+          <div class="stage-step" id="p-step-4">
+            <span class="step-indicator">4</span>
+            <div class="step-content">
+              <strong>Stage 4: Signal & Anomaly Detection</strong>
+              <span>Isolating honeypots, phantom out-of-stock lures, & MAP violations...</span>
+            </div>
+            <span class="step-status text-muted">Pending</span>
+          </div>
+
+          <div class="stage-step" id="p-step-5">
+            <span class="step-indicator">5</span>
+            <div class="step-content">
+              <strong>Stage 5: Causal Synthesis & 3D Knowledge Graph</strong>
+              <span>Traversing 1,000+ nodes, OEM factories, and cross-price elasticity curves...</span>
+            </div>
+            <span class="step-status text-muted">Pending</span>
+          </div>
+
+          <div class="stage-step" id="p-step-6">
+            <span class="step-indicator">6</span>
+            <div class="step-content">
+              <strong>Stage 6: Strategic Recommendations Orchestration</strong>
+              <span>Formulating executive merchandising directives & margin preservation actions...</span>
+            </div>
+            <span class="step-status text-muted">Pending</span>
+          </div>
+        </div>
+
+        <div class="pipeline-modal-footer mt-16" id="pipeline-modal-footer">
+          <div style="font-size:0.75rem; color:var(--text-secondary);" id="pipeline-modal-summary">
+            Coordinating distributed pipeline execution...
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-pipeline-done" style="display:none;" onclick="closePipelineModal()">
+            View Updated Dashboard &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXECUTIVE TOUR BANNER -->
+    <div class="tour-banner" id="tour-banner" style="display:none;">
+      <div class="tour-content">
+        <span class="tour-step-badge" id="tour-step-badge">STEP 1/6</span>
+        <strong id="tour-title">Executive Overview</strong>:
+        <span id="tour-description">Welcome to the Autonomous Hybrid Retail Intelligence platform.</span>
+      </div>
+      <div class="tour-actions">
+        <button class="btn btn-secondary btn-xs" onclick="prevTourStep()">Previous</button>
+        <button class="btn btn-primary btn-xs" onclick="nextTourStep()">Next Step →</button>
+        <button class="btn btn-ghost btn-xs" onclick="stopExecutiveTour()">Exit Tour</button>
+      </div>
+    </div>
+
+    <!-- STAKEHOLDER EXECUTIVE TABS -->
+    <nav class="app-tabs" id="nav-stakeholder-tabs" aria-label="Stakeholder Navigation">
+      <button class="tab-btn active" id="tab-btn-war-room" onclick="switchTab('war-room')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+        </svg>
+        1. Executive Causal War Room
+      </button>
+      <button class="tab-btn" id="tab-btn-recommendations" onclick="switchTab('recommendations')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        2. Strategic Recommendations (Commercial Actions)
+      </button>
+      <button class="tab-btn" id="tab-btn-matching" onclick="switchTab('matching')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
+        </svg>
+        3. Market Intelligence & Product Explorer
+      </button>
+      <button class="tab-btn" id="tab-btn-graph" onclick="switchTab('graph')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><line x1="8.5" y1="7.5" x2="15.5" y2="16.5"/><line x1="15.5" y1="7.5" x2="8.5" y2="16.5"/>
+        </svg>
+        4. Retail Knowledge Graph
+      </button>
+    </nav>
+
+    <!-- TECHNICAL & MLOPS TELEMETRY TABS (Separated View) -->
+    <nav class="app-tabs telemetry-nav" id="nav-telemetry-tabs" style="display:none;" aria-label="Telemetry Navigation">
+      <button class="tab-btn active" id="tab-btn-stages" onclick="switchTab('stages')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        A. 6-Stage Operational Lifecycle
+      </button>
+      <button class="tab-btn" id="tab-btn-agents" onclick="switchTab('agents')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        B. Multi-Agent Streaming Mesh (P-E-R-R)
+      </button>
+      <button class="tab-btn" id="tab-btn-metrics" onclick="switchTab('metrics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
+        </svg>
+        C. 5-Plane Telemetry & Drift Radar
+      </button>
+      <button class="tab-btn" id="tab-btn-architecture" onclick="switchTab('architecture')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+        D. Cloud Architecture (GCP vs AWS)
+      </button>
+      <button class="tab-btn" id="tab-btn-edge-cases" onclick="switchTab('edge-cases')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <polygon points="12 2 2 22 22 22 12 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        E. 8 Edge Cases & Chaos Sandbox
+      </button>
+      <button class="tab-btn" id="tab-btn-studio" onclick="switchTab('studio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        F. Dataset Studio & Golden Eval
+      </button>
+    </nav>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="app-main-content">
+      <!-- ============================================================= -->
+      <!-- STAKEHOLDER TAB 1: EXECUTIVE CAUSAL WAR ROOM -->
+      <!-- ============================================================= -->
+      <section class="tab-content active" id="view-war-room">
+        <!-- Top Executive KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card glow-cyan">
+            <div class="kpi-header">
+              <span class="kpi-title">Gross Margin Protected</span>
+              <span class="kpi-badge badge-success">+28.4% Preserved</span>
+            </div>
+            <div class="kpi-value" id="kpi-margin-protected">$184,250.00</div>
+            <div class="kpi-subtext">Prevented automated margin erosion from phantom inventory & unfulfillable lures</div>
+          </div>
+
+          <div class="kpi-card glow-green">
+            <div class="kpi-header">
+              <span class="kpi-title">Projected Revenue Uplift</span>
+              <span class="kpi-badge badge-success">+14.2% Expansion</span>
+            </div>
+            <div class="kpi-value" id="kpi-rev-uplift">$342,800.00</div>
+            <div class="kpi-subtext">Identified through targeted volume repricing & OEM store-brand arbitrage</div>
+          </div>
+
+          <div class="kpi-card glow-purple">
+            <div class="kpi-header">
+              <span class="kpi-title">Market Assortment Coverage</span>
+              <span class="kpi-badge badge-info">48 Competitors</span>
+            </div>
+            <div class="kpi-value" id="kpi-coverage">94.8%</div>
+            <div class="kpi-subtext">Across 20,000+ SKU observations in 10 harmonized retail categories</div>
+          </div>
+
+          <div class="kpi-card glow-amber">
+            <div class="kpi-header">
+              <span class="kpi-title">Portfolio Price Index (PI)</span>
+              <span class="kpi-badge badge-warning">Target: 98-102</span>
+            </div>
+            <div class="kpi-value" id="kpi-price-index">99.4</div>
+            <div class="kpi-subtext">Balanced price competitiveness with active margin protection</div>
+          </div>
+        </div>
+
+        <!-- Live Competitor Ingestion & Price Shifts Matrix -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Active Market Feed across 48 Retail Competitors</h2>
+              <p class="panel-subtitle">Streaming price shifts across Big Box (Amazon, Walmart, Target, Costco), Specialists, and Category Giants</p>
+            </div>
+            <div class="panel-controls" style="display:flex; gap:10px; align-items:center;">
+              <select id="filter-market-category" class="form-select form-select-sm" onchange="filterMarketFeed()">
+                <option value="all">All 10 Categories</option>
+                <option value="Consumer Electronics">Consumer Electronics</option>
+                <option value="Home & Living">Home & Living</option>
+                <option value="Apparel & Fashion">Apparel & Fashion</option>
+                <option value="Grocery & Gourmet">Grocery & Gourmet</option>
+                <option value="Tools & Hardware">Tools & Hardware</option>
+                <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                <option value="Sports & Outdoors">Sports & Outdoors</option>
+                <option value="Toys & Hobbies">Toys & Hobbies</option>
+                <option value="Health & Wellness">Health & Wellness</option>
+                <option value="Automotive Accessories">Automotive Accessories</option>
+              </select>
+              <button class="btn btn-secondary btn-sm" onclick="fetchCatalogs()">
+                Refresh Stream
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="competitor-table">
+              <thead>
+                <tr>
+                  <th>Competitor & Tier</th>
+                  <th>Competitor SKU</th>
+                  <th>Product Title</th>
+                  <th>Category</th>
+                  <th>Base MSRP</th>
+                  <th>Effective Price</th>
+                  <th>Stock Viability</th>
+                  <th>Strategic Action</th>
+                </tr>
+              </thead>
+              <tbody id="competitor-table-body">
+                <!-- Populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Executive Strategic Briefings & Causal Alerts -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Autonomous Causal Strategy & Margin Protection Briefings</h2>
+              <p class="panel-subtitle">Diagnosing the 'WHY' behind competitor price moves: Predatory pricing, phantom lures, or OEM white-label clones</p>
+            </div>
+          </div>
+          <div class="briefings-grid" id="briefings-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Interactive Pricing Elasticity & Revenue Simulator -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Cross-Price Elasticity & Counter-Action Simulator</h2>
+              <p class="panel-subtitle">Simulate margin vs volume trade-offs when reacting to competitor price cuts</p>
+            </div>
+          </div>
+          <div class="elasticity-simulator-grid">
+            <div class="sim-controls">
+              <label class="form-label">Competitor Price Cut Simulation (%):</label>
+              <div class="range-group">
+                <input type="range" min="0" max="40" value="15" class="form-range" id="sim-cut-slider" oninput="updateElasticitySimulation()">
+                <span class="range-val" id="sim-cut-val">-15%</span>
+              </div>
+
+              <div class="sim-radio-group mt-12">
+                <label class="radio-label">
+                  <input type="radio" name="sim-strategy" value="MATCH" checked onchange="updateElasticitySimulation()">
+                  <span>Strategy A: Aggressive Price Match</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="sim-strategy" value="HOLD" onchange="updateElasticitySimulation()">
+                  <span>Strategy B: Hold Price & Defend Margin (Autonomous Agent Recommendation)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sim-results">
+              <div class="sim-res-box">
+                <span class="sim-res-title">Projected Revenue Impact</span>
+                <span class="sim-res-val text-amber" id="sim-rev-impact">+$34,200 / week</span>
+              </div>
+              <div class="sim-res-box">
+                <span class="sim-res-title">Gross Margin Delta</span>
+                <span class="sim-res-val text-green" id="sim-margin-impact">+$18,500 protected</span>
+              </div>
+              <div class="sim-res-box">
+                <span class="sim-res-title">Cross-Elasticity Coefficient</span>
+                <span class="sim-res-val text-cyan">-1.42 (High Elasticity)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- STAKEHOLDER TAB 2: STRATEGIC RECOMMENDATIONS (COMMERCIAL ACTIONS) -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-recommendations">
+        <!-- Recommendation Header Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card glow-amber">
+            <div class="kpi-header">
+              <span class="kpi-title">Active Strategic Directives</span>
+              <span class="kpi-badge badge-warning" id="rec-immediate-count">12 Immediate</span>
+            </div>
+            <div class="kpi-value" id="rec-total-count">48 Actions</div>
+            <div class="kpi-subtext">Commercial pricing, margin protection, and merchandising actions</div>
+          </div>
+
+          <div class="kpi-card glow-cyan">
+            <div class="kpi-header">
+              <span class="kpi-title">Revenue at Risk</span>
+              <span class="kpi-badge badge-warning">High Urgency</span>
+            </div>
+            <div class="kpi-value" id="rec-rev-risk">$218,400.00</div>
+            <div class="kpi-subtext">Volume at risk if competitor undercutting is left unanswered</div>
+          </div>
+
+          <div class="kpi-card glow-green">
+            <div class="kpi-header">
+              <span class="kpi-title">Margin Protected by Guardrails</span>
+              <span class="kpi-badge badge-success">Active Defense</span>
+            </div>
+            <div class="kpi-value" id="rec-margin-protected">$184,250.00</div>
+            <div class="kpi-subtext">Preserved by halting reactive matching on phantom stock</div>
+          </div>
+
+          <div class="kpi-card glow-purple">
+            <div class="kpi-header">
+              <span class="kpi-title">OEM Arbitrage Uplift</span>
+              <span class="kpi-badge badge-info">Store-Brand</span>
+            </div>
+            <div class="kpi-value" id="rec-oem-uplift">$124,400.00</div>
+            <div class="kpi-subtext">Opportunity by positioning identical factory private-label items</div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="card panel-card mt-24">
+          <div class="recommendations-filter-bar">
+            <div class="filter-group">
+              <label class="form-label" style="margin-bottom:4px;">Filter Category:</label>
+              <select id="rec-filter-cat" class="form-select form-select-sm" onchange="fetchRecommendations()">
+                <option value="all">All 10 Categories</option>
+                <option value="Consumer Electronics">Consumer Electronics</option>
+                <option value="Home & Living">Home & Living</option>
+                <option value="Apparel & Fashion">Apparel & Fashion</option>
+                <option value="Grocery & Gourmet">Grocery & Gourmet</option>
+                <option value="Tools & Hardware">Tools & Hardware</option>
+                <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                <option value="Sports & Outdoors">Sports & Outdoors</option>
+                <option value="Toys & Hobbies">Toys & Hobbies</option>
+                <option value="Health & Wellness">Health & Wellness</option>
+                <option value="Automotive Accessories">Automotive Accessories</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="form-label" style="margin-bottom:4px;">Action Urgency:</label>
+              <select id="rec-filter-urgency" class="form-select form-select-sm" onchange="fetchRecommendations()">
+                <option value="all">All Urgencies</option>
+                <option value="IMMEDIATE">Immediate Action</option>
+                <option value="HIGH">High Priority</option>
+                <option value="STRATEGIC">Strategic Opportunity</option>
+                <option value="MEDIUM">Medium Priority</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="form-label" style="margin-bottom:4px;">Directive Type:</label>
+              <select id="rec-filter-type" class="form-select form-select-sm" onchange="fetchRecommendations()">
+                <option value="all">All Directives</option>
+                <option value="AUTO_REPRICE_VOLUME_DEFENSE">Auto-Reprice Volume Defense</option>
+                <option value="HOLD_MARGIN_PHANTOM_DEFENSE">Hold Margin & Disregard Phantom Lures</option>
+                <option value="ENFORCE_MAP_POLICY">Enforce MAP Policy Violation</option>
+                <option value="OEM_PRIVATE_LABEL_ARBITRAGE">OEM Store-Brand Arbitrage</option>
+                <option value="BASKET_BUILDER_BUNDLE">Cross-Sell Basket Builder Bundle</option>
+              </select>
+            </div>
+
+            <div class="filter-group" style="align-self:flex-end; display:flex; gap:8px;">
+              <button class="btn btn-secondary btn-sm" onclick="fetchRecommendations()">
+                Apply Filters
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-orchestrate-recs" onclick="runFullCatalogOrchestration()">
+                ⚡ Orchestrate Multi-Agent Recommendations
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendations Grid -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Executive Merchandising Action Directives</h2>
+              <p class="panel-subtitle">Actionable commercial mandates formulated with rigorous retail business logic and margin guardrails</p>
+            </div>
+          </div>
+
+          <div class="recommendations-cards-grid" id="recommendations-container">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- STAKEHOLDER TAB 3: PRODUCT CATALOG & MARKET RESOLUTION -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-matching">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Autonomous Tri-Tier Decision Resolution Console</h2>
+              <p class="panel-subtitle">Deterministic Rules (Tier 1) → Classical ML Top-K (Tier 2) → Multi-Agent Arbiter (Tier 3) → HITL Queue</p>
+            </div>
+          </div>
+
+          <div class="tri-tier-cards-grid">
+            <div class="tier-box tier-1">
+              <div class="tier-box-header">
+                <span class="tier-pill pill-green">Tier 1: Deterministic</span>
+                <span class="tier-stat">τ = 1.0</span>
+              </div>
+              <p class="tier-box-desc">Exact GTIN/Barcode checks and hard brand boundaries.</p>
+              <div class="tier-box-cases" id="tier1-cases"></div>
+            </div>
+
+            <div class="tier-box tier-2">
+              <div class="tier-box-header">
+                <span class="tier-pill pill-cyan">Tier 2: Classical ML</span>
+                <span class="tier-stat">τ ≥ 0.92</span>
+              </div>
+              <p class="tier-box-desc">Bi-encoder ANN retrieval and Cross-encoder semantic re-ranking.</p>
+              <div class="tier-box-cases" id="tier2-cases"></div>
+            </div>
+
+            <div class="tier-box tier-3">
+              <div class="tier-box-header">
+                <span class="tier-pill pill-purple">Tier 3: Multi-Agent</span>
+                <span class="tier-stat">0.65 ≤ τ < 0.92</span>
+              </div>
+              <p class="tier-box-desc">Ambiguity resolution, OEM traversal, checkout coupons & OCR reflection.</p>
+              <div class="tier-box-cases" id="tier3-cases"></div>
+            </div>
+
+            <div class="tier-box tier-4">
+              <div class="tier-box-header">
+                <span class="tier-pill pill-amber">HITL Queue</span>
+                <span class="tier-stat">τ < 0.65 / Clash</span>
+              </div>
+              <p class="tier-box-desc">Human Merchandiser review queue for multimodal contradictions.</p>
+              <div class="tier-box-cases" id="tier4-cases"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Multimodal Product Inspector -->
+        <div class="card panel-card mt-24" id="sku-inspector-container">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Multimodal SKU Equivalence Comparison</h2>
+              <p class="panel-subtitle">Side-by-side inspection of competitor listing vs internal catalog match</p>
+            </div>
+            <div id="inspector-action-badges"></div>
+          </div>
+
+          <div class="comparison-grid" id="comparison-view">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- STAKEHOLDER TAB 4: RETAIL KNOWLEDGE GRAPH -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-graph">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">3D & 2D Enterprise Retail Property Knowledge Graph Explorer</h2>
+              <p class="panel-subtitle">Interactive 3D constellation & 2D topology traversing Conglomerates, Brands, OEM Factories, 48 Competitors, and SKUs</p>
+            </div>
+            <div class="panel-controls" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <!-- 3D / 2D Mode Switcher -->
+              <div class="graph-dimension-switcher">
+                <button class="btn btn-primary btn-xs active" id="btn-kg-3d" onclick="switchGraphDimension('3d')">🌌 3D Cyber-Space</button>
+                <button class="btn btn-secondary btn-xs" id="btn-kg-2d" onclick="switchGraphDimension('2d')">🗺️ 2D Interactive Map</button>
+              </div>
+
+              <!-- Zoom & Viewport Controls -->
+              <div class="zoom-controls-group">
+                <button class="btn btn-secondary btn-xs" onclick="zoomGraph(1.3)" title="Zoom In (+)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                  Zoom +
+                </button>
+                <button class="btn btn-secondary btn-xs" onclick="zoomGraph(0.7)" title="Zoom Out (-)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                  Zoom -
+                </button>
+                <button class="btn btn-secondary btn-xs" onclick="resetGraphView()" title="Reset View">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                  Reset View
+                </button>
+                <button class="btn btn-secondary btn-xs" id="btn-kg-rotate" onclick="toggleAutoRotate()" title="Toggle Auto-Rotation">
+                  🎯 Auto-Rotate
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Search & Filtering Bar -->
+          <div class="graph-search-bar mt-12">
+            <div style="flex:1; position:relative;">
+              <input type="text" id="kg-search-input" class="form-input form-input-sm" placeholder="🔍 Search SKU, OEM Factory, Brand, or Competitor to zoom in & focus..." oninput="searchAndFocusNode()">
+            </div>
+            <div class="kg-filter-chips">
+              <span class="chip-filter active" onclick="filterGraphNodeType('ALL', this)">All Nodes</span>
+              <span class="chip-filter" onclick="filterGraphNodeType('OEM_Factory', this)" style="border-color:#10b981; color:#10b981;">OEM Factories</span>
+              <span class="chip-filter" onclick="filterGraphNodeType('Competitor', this)" style="border-color:#f59e0b; color:#f59e0b;">48 Competitors</span>
+              <span class="chip-filter" onclick="filterGraphNodeType('Internal_SKU', this)" style="border-color:#06b6d4; color:#06b6d4;">Internal SKUs</span>
+              <span class="chip-filter" onclick="filterGraphNodeType('Competitor_SKU', this)" style="border-color:#ec4899; color:#ec4899;">Competitor SKUs</span>
+            </div>
+          </div>
+
+          <div class="graph-explorer-container mt-16">
+            <!-- 3D WebGL Canvas Container -->
+            <div class="graph-canvas-wrapper" id="graph-3d-wrapper" style="position:relative;">
+              <canvas id="kg-3d-canvas" style="width:100%; height:540px; display:block; cursor:grab;"></canvas>
+              <div class="kg-3d-hint">
+                <span>🖱️ Click + Drag to Rotate 3D Space &bull; Scroll to Zoom In/Out &bull; Click Node to Inspect</span>
+              </div>
+            </div>
+
+            <!-- 2D SVG Canvas Container (Toggleable) -->
+            <div class="graph-canvas-wrapper" id="graph-2d-wrapper" style="display:none; position:relative; overflow:hidden;">
+              <svg id="kg-svg-canvas" width="100%" height="540" style="cursor:grab;"></svg>
+              <div class="kg-3d-hint">
+                <span>🖱️ Click + Drag to Pan Map &bull; Scroll Wheel to Zoom In/Out &bull; Click Node to Inspect</span>
+              </div>
+            </div>
+
+            <!-- Detailed Entity Inspector Pane -->
+            <div class="graph-inspector-pane" id="kg-inspector-pane">
+              <h3 class="inspector-title">Entity & Relationship Inspector</h3>
+              <p class="inspector-sub">Click or search any node on the 3D/2D graph to inspect OEM supply chain specifications, cross-elasticity, and patent links.</p>
+              <div id="kg-node-details" class="kg-details-content">
+                <div class="kg-empty-hint">Select or search a node to inspect...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="graph-legend mt-16">
+            <div class="legend-item"><span class="legend-dot" style="background:#f43f5e"></span> Parent Company</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span> Brand</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span> 48 Competitors</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#10b981"></span> OEM Factory</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#06b6d4"></span> Internal SKU</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span> Competitor SKU</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB A: 6-STAGE LIFECYCLE -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-stages">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">End-to-End 6-Stage Retail Competitor Intelligence Lifecycle</h2>
+              <p class="panel-subtitle">From edge perimeter discovery to multimodal ingestion, entity resolution, causal reasoning, and closed-loop orchestration</p>
+            </div>
+          </div>
+
+          <div class="stages-timeline-container">
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 1</div>
+              <h3 class="stage-title">Perimeter Discovery</h3>
+              <p class="stage-desc">Continuous surface mapping across 48 e-commerce domains, marketplaces (Amazon/Walmart), and DTC storefronts.</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-cyan">48 Competitors</span>
+                <span class="tag tag-purple">Sub-Hourly Crawls</span>
+              </div>
+            </div>
+
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 2</div>
+              <h3 class="stage-title">Multimodal Ingestion</h3>
+              <p class="stage-desc">Unstructured HTML DOM harvesting, viewport screenshots, JSON-LD microdata, and dynamic user basket simulation.</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-green">DOM + Vision</span>
+                <span class="tag tag-amber">Honeypot Shield</span>
+              </div>
+            </div>
+
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 3</div>
+              <h3 class="stage-title">Entity Resolution</h3>
+              <p class="stage-desc">SKU harmonization via Universal GPC taxonomy projection and multimodal vector embeddings (α·Text + β·Visual + γ·Attr).</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-purple">Bi/Cross-Encoder</span>
+                <span class="tag tag-cyan">HNSW ANN</span>
+              </div>
+            </div>
+
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 4</div>
+              <h3 class="stage-title">Signal & Anomaly Detection</h3>
+              <p class="stage-desc">Assortment overlap %, category gap analysis, digital share-of-shelf rank tracking, and promotional dissection.</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-amber">Isolation Forest</span>
+                <span class="tag tag-green">Share of Shelf</span>
+              </div>
+            </div>
+
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 5</div>
+              <h3 class="stage-title">Causal Synthesis</h3>
+              <p class="stage-desc">Translating numerical shifts into causal intent hypotheses: Predatory pricing vs inventory liquidation vs phantom stock lures.</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-pink">ReAct Reasoning</span>
+                <span class="tag tag-purple">Elasticity Curves</span>
+              </div>
+            </div>
+
+            <div class="stage-card">
+              <div class="stage-num-badge">STAGE 6</div>
+              <h3 class="stage-title">Action Orchestration</h3>
+              <p class="stage-desc">Automated action routing to Dynamic Repricers, ERP procurement triggers, and Merchandiser HITL review queue.</p>
+              <div class="stage-telemetry">
+                <span class="tag tag-cyan">Dynamic Repricer</span>
+                <span class="tag tag-green">Active Feedback</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB B: MULTI-AGENT EXECUTION MESH -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-agents">
+        <div class="agent-mesh-header">
+          <div class="mesh-pipeline-diagram">
+            <div class="mesh-node active" id="node-plan"><span class="node-num">1</span><span class="node-label">PLAN (Decomposition)</span></div>
+            <div class="mesh-arrow">→</div>
+            <div class="mesh-node" id="node-execute"><span class="node-num">2</span><span class="node-label">EXECUTE (Tools & Agents)</span></div>
+            <div class="mesh-arrow">→</div>
+            <div class="mesh-node" id="node-reflect"><span class="node-num">3</span><span class="node-label">REFLECT (Truth Hierarchy)</span></div>
+            <div class="mesh-arrow">→</div>
+            <div class="mesh-node" id="node-report"><span class="node-num">4</span><span class="node-label">REPORT (Synthesize)</span></div>
+          </div>
+        </div>
+
+        <div class="split-layout mt-24">
+          <div class="card panel-card flex-2">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Live Agent Thought Trajectory & Execution Stream</h2>
+                <p class="panel-subtitle">Real-time Server-Sent Events (SSE) from Supervisor, Matcher, Promo, and Strategy Agents</p>
+              </div>
+              <div class="stream-control-group">
+                <select id="stream-sku-select" class="form-select">
+                  <option value="ZEN-TV-65-OLED">ZEN-TV-65-OLED (Hidden Coupon + Borderline)</option>
+                  <option value="APX-COF-3PK-AMBIG">APX-COF-3PK-AMBIG (Deceptive 3-Pack Unit Price)</option>
+                  <option value="NOV-CHAIR-ERGOPRO">NOV-CHAIR-ERGOPRO (Private Label OEM Traversal)</option>
+                  <option value="TTN-DRILL-PHANTOM">TTN-DRILL-PHANTOM (Phantom Out-of-Stock Lure)</option>
+                  <option value="APX-CLASH-NORDIC">APX-CLASH-NORDIC (Multimodal 2024 vs 2026 Clash)</option>
+                  <option value="APX-AURA-99">APX-AURA-99 (Deterministic Barcode Check)</option>
+                <button class="btn btn-primary btn-sm" onclick="startStreamingAnalysis()">
+                  ⚡ Stream Thoughts
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="stopStreamingAnalysis()">
+                  ⏸ Pause
+                </button>
+              </div>
+            </div>
+
+            <div class="streaming-console" id="streaming-console">
+              <div class="console-welcome">
+                <div class="console-orb"></div>
+                <p>Select a competitor SKU above and click <strong>Stream Thoughts</strong> to inspect the live multi-agent Plan-Execute-Reflect-Report loop in real-time.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card panel-card flex-1">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Sandboxed Tool Mesh</h2>
+                <p class="panel-subtitle">Active tools registered in execution mesh</p>
+              </div>
+            </div>
+
+            <div class="tool-list">
+              <div class="tool-item">
+                <div class="tool-dot green"></div>
+                <div class="tool-info">
+                  <span class="tool-name">inspect_pdp_elements</span>
+                  <span class="tool-desc">Extracts hidden DOM tabs, JSON-LD, part numbers</span>
+                </div>
+              </div>
+              <div class="tool-item">
+                <div class="tool-dot purple"></div>
+                <div class="tool-info">
+                  <span class="tool-name">query_retail_knowledge_graph</span>
+                  <span class="tool-desc">Traverses OEM factory relationships & brand owners</span>
+                </div>
+              </div>
+              <div class="tool-item">
+                <div class="tool-dot amber"></div>
+                <div class="tool-info">
+                  <span class="tool-name">ocr_nutrition_or_specs_panel</span>
+                  <span class="tool-desc">Packaging OCR to resolve deceptive 3-pack claims</span>
+                </div>
+              </div>
+              <div class="tool-item">
+                <div class="tool-dot cyan"></div>
+                <div class="tool-info">
+                  <span class="tool-name">simulate_checkout_basket</span>
+                  <span class="tool-desc">Clips digital coupons & uncovers hidden cart drops</span>
+                </div>
+              </div>
+              <div class="tool-item">
+                <div class="tool-dot red"></div>
+                <div class="tool-info">
+                  <span class="tool-name">verify_fulfillment_inventory</span>
+                  <span class="tool-desc">Validates real stock across zip codes to flag phantoms</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="truth-hierarchy-card mt-20">
+              <h3 class="hierarchy-title">4-Tier Hierarchy of Truth Guardrail</h3>
+              <ol class="hierarchy-list">
+                <li><span class="tier-tag t1">Tier 1</span> Customer Review Imagery & Verified Photos</li>
+                <li><span class="tier-tag t2">Tier 2</span> Manufacturer Spec Tables & GTIN Barcodes</li>
+                <li><span class="tier-tag t3">Tier 3</span> High-Res PDP Hero Imagery</li>
+                <li><span class="tier-tag t4">Tier 4</span> Textual Marketing Titles & Taglines</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB C: 5-PLANE METRICS & DRIFT RADAR -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-metrics">
+        <div class="planes-layout">
+          <div class="card metric-plane-card">
+            <div class="plane-header"><span class="plane-num">1</span><h3 class="plane-title">Business Impact Plane</h3></div>
+            <div class="plane-metrics-list">
+              <div class="m-row"><span class="m-label">Gross Margin Protected:</span><span class="m-val text-cyan" id="m-margin">$184,250.00</span></div>
+              <div class="m-row"><span class="m-label">Assortment Coverage:</span><span class="m-val text-green" id="m-coverage">94.8%</span></div>
+              <div class="m-row"><span class="m-label">Time-to-Discovery (TTD):</span><span class="m-val text-amber" id="m-ttd">14.2s</span></div>
+              <div class="m-row"><span class="m-label">Opportunity Capture Velocity:</span><span class="m-val" id="m-opp-vel">1.8 hrs</span></div>
+            </div>
+          </div>
+
+          <div class="card metric-plane-card">
+            <div class="plane-header"><span class="plane-num">2</span><h3 class="plane-title">Agentic Reasoning Plane</h3></div>
+            <div class="plane-metrics-list">
+              <div class="m-row"><span class="m-label">Plan Optimality Ratio:</span><span class="m-val text-cyan" id="m-plan-opt">0.86</span></div>
+              <div class="m-row"><span class="m-label">Tool Selection Accuracy:</span><span class="m-val text-green" id="m-tool-acc">98.4%</span></div>
+              <div class="m-row"><span class="m-label">Self-Correction Convergence:</span><span class="m-val text-purple" id="m-self-corr">94.1%</span></div>
+              <div class="m-row"><span class="m-label">Arbitration Escalation Rate:</span><span class="m-val text-amber" id="m-esc-rate">8.2%</span></div>
+            </div>
+          </div>
+
+          <div class="card metric-plane-card">
+            <div class="plane-header"><span class="plane-num">3</span><h3 class="plane-title">LLM / RAG Quality Plane</h3></div>
+            <div class="plane-metrics-list">
+              <div class="m-row"><span class="m-label">Faithfulness (Groundedness):</span><span class="m-val text-green" id="m-faith">0.97</span></div>
+              <div class="m-row"><span class="m-label">Context Precision:</span><span class="m-val" id="m-ctx-prec">0.95</span></div>
+              <div class="m-row"><span class="m-label">Context Recall:</span><span class="m-val" id="m-ctx-rec">0.93</span></div>
+              <div class="m-row"><span class="m-label">Hallucination Rate:</span><span class="m-val text-cyan" id="m-halluc">0.03</span></div>
+            </div>
+          </div>
+
+          <div class="card metric-plane-card">
+            <div class="plane-header"><span class="plane-num">4</span><h3 class="plane-title">Classical ML Model Plane</h3></div>
+            <div class="plane-metrics-list">
+              <div class="m-row"><span class="m-label">Candidate Recall@5:</span><span class="m-val text-green" id="m-recall">0.96</span></div>
+              <div class="m-row"><span class="m-label">Cross-Encoder PR-AUC:</span><span class="m-val text-cyan" id="m-prauc">0.94</span></div>
+              <div class="m-row"><span class="m-label">F1-Score:</span><span class="m-val" id="m-f1">0.91</span></div>
+              <div class="m-row"><span class="m-label">Embedding Space Alignment:</span><span class="m-val text-purple" id="m-emb-align">0.98</span></div>
+            </div>
+          </div>
+
+          <div class="card metric-plane-card">
+            <div class="plane-header"><span class="plane-num">5</span><h3 class="plane-title">System & Infra Plane</h3></div>
+            <div class="plane-metrics-list">
+              <div class="m-row"><span class="m-label">End-to-End P99 Latency:</span><span class="m-val text-cyan" id="m-p99">124.0 ms</span></div>
+              <div class="m-row"><span class="m-label">P99 Retrieval Latency:</span><span class="m-val text-green" id="m-p99-ret">11.2 ms</span></div>
+              <div class="m-row"><span class="m-label">Pipeline Throughput:</span><span class="m-val" id="m-throughput">185 SKUs/s</span></div>
+              <div class="m-row"><span class="m-label">Cost Per Monitored SKU:</span><span class="m-val text-amber" id="m-cost">$0.0024</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistical Drift Radar -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Enterprise Statistical & Cognitive Drift Radar</h2>
+              <p class="panel-subtitle">Continuous telemetry monitoring covariate shift, embedding drift, and Page-Hinkley concept decay</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="fetchDriftStatus()">Recalculate Drift</button>
+          </div>
+
+          <div class="drift-radar-grid">
+            <div class="drift-box">
+              <h4 class="drift-box-title">Ingestion Covariate Shift (PSI)</h4>
+              <div class="drift-stat" id="radar-psi-val">0.042</div>
+              <span class="badge badge-success" id="radar-psi-status">STABLE (PSI &lt; 0.10)</span>
+              <p class="drift-note">Population Stability Index across category price distributions.</p>
+            </div>
+
+            <div class="drift-box">
+              <h4 class="drift-box-title">Embedding Space Drift (Wasserstein)</h4>
+              <div class="drift-stat" id="radar-wasserstein-val">0.038</div>
+              <span class="badge badge-success" id="radar-wasserstein-status">STABLE (&lt; 0.18)</span>
+              <p class="drift-note">Earth Mover's Distance between historical and newly ingested vector clusters.</p>
+            </div>
+
+            <div class="drift-box">
+              <h4 class="drift-box-title">Concept Drift (Page-Hinkley)</h4>
+              <div class="drift-stat" id="radar-ph-val">0.00</div>
+              <span class="badge badge-success" id="radar-ph-status">NO DRIFT</span>
+              <p class="drift-note">Sequential statistical test tracking residual classification errors over time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB D: CLOUD ARCHITECTURE (GCP VS AWS) -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-architecture">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Cloud-Native Dual-Stack Architecture Blueprint</h2>
+              <p class="panel-subtitle">Enterprise deployment topologies for Google Cloud Platform (GCP) and Amazon Web Services (AWS)</p>
+            </div>
+            <div class="arch-toggle-group">
+              <button class="btn btn-primary btn-sm active" id="btn-arch-gcp" onclick="switchCloudArch('gcp')">Google Cloud Platform (GCP)</button>
+              <button class="btn btn-secondary btn-sm" id="btn-arch-aws" onclick="switchCloudArch('aws')">Amazon Web Services (AWS)</button>
+            </div>
+          </div>
+
+          <!-- GCP Diagram -->
+          <div class="arch-diagram-view" id="arch-view-gcp">
+            <div class="arch-tier-box">
+              <div class="arch-tier-label">1. Ingestion Tier</div>
+              <div class="arch-chips">
+                <span class="chip-service gcp">Cloud Scheduler</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Cloud Run Jobs (Headless Crawlers)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Cloud Storage + Pub/Sub (Event Stream)</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">2. ML & Vector Fabric</div>
+              <div class="arch-chips">
+                <span class="chip-service gcp">GKE Autopilot (GPU/TPU)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Vertex AI Vector Search (HNSW Index)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Spanner Graph (Retail Property Graph)</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">3. Agentic Execution Mesh</div>
+              <div class="arch-chips">
+                <span class="chip-service gcp">GKE Agent Orchestrators</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Vertex AI (Gemini 1.5 Pro / Flash Structured Outputs)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Memorystore Redis + Firestore Checkpoints</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">4. Egress & Enterprise OLAP</div>
+              <div class="arch-chips">
+                <span class="chip-service gcp">BigQuery (Pricing Elasticity Analytics)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service gcp">Pub/Sub Event Egress to Dynamic Repricer / ERP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AWS Diagram -->
+          <div class="arch-diagram-view" id="arch-view-aws" style="display:none;">
+            <div class="arch-tier-box">
+              <div class="arch-tier-label">1. Ingestion Tier</div>
+              <div class="arch-chips">
+                <span class="chip-service aws">EventBridge Schedules</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">ECS Fargate Tasks (Headless Crawlers)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">S3 Data Lake + Amazon MSK (Apache Kafka)</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">2. ML & Vector Fabric</div>
+              <div class="arch-chips">
+                <span class="chip-service aws">AWS EKS GPU Cluster</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">OpenSearch Serverless (Vector Engine)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">Amazon Neptune (Gremlin Knowledge Graph)</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">3. Agentic Execution Mesh</div>
+              <div class="arch-chips">
+                <span class="chip-service aws">EKS Agent Orchestrator Pods</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">Amazon Bedrock (Claude 3.5 Sonnet / Llama 3)</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">ElastiCache Redis + DynamoDB Checkpoints</span>
+              </div>
+            </div>
+
+            <div class="arch-tier-box mt-16">
+              <div class="arch-tier-label">4. Egress & Enterprise OLAP</div>
+              <div class="arch-chips">
+                <span class="chip-service aws">Amazon Redshift Serverless + Aurora Postgres</span>
+                <span class="chip-arrow">→</span>
+                <span class="chip-service aws">EventBridge to Dynamic Repricer / SAP APIs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB E: 8 EDGE CASES & CHAOS SANDBOX -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-edge-cases">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Taxonomy of 8 Critical Retail Edge Cases & Concrete Resilience</h2>
+              <p class="panel-subtitle">Click 'Test Scenario' on any edge case to trigger live agent resolution</p>
+            </div>
+          </div>
+
+          <div class="edge-cases-grid">
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">1</span><span class="edge-name">Adversarial Anti-Scraping & Honeypots</span></div>
+              <p class="edge-desc">Competitors deploy honeypot DOM traps and synthetic price drops.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Dynamic fingerprint shuffling & anomaly quarantine.</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('ZEN-HONEYPOT-99')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">2</span><span class="edge-name">Deceptive Packaging & Multipack Ambiguities</span></div>
+              <p class="edge-desc">Competitor lists 'Product X - 3 Pack' at single-unit price.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Automated unit price ($/oz) normalization + OCR packaging badge.</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('APX-COF-3PK-AMBIG')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">3</span><span class="edge-name">Private Label & Rebadged White-Label SKUs</span></div>
+              <p class="edge-desc">Competitor sells private label made by identical OEM as our internal brand.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Knowledge Graph OEM factory & patent matching (EQUIVALENT_PRIVATE_LABEL).</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('NOV-CHAIR-ERGOPRO')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">4</span><span class="edge-name">Hidden Basket Discounts & MAP Evasion</span></div>
+              <p class="edge-desc">High base MSRP with clickable on-page vouchers & in-cart discounts.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Sandboxed Shopper Agent clips vouchers & extracts true checkout total.</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('ZEN-TV-65-OLED')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">5</span><span class="edge-name">Phantom Stock & Adversarial Out-of-Stock Pricing</span></div>
+              <p class="edge-desc">Ultra-low bait price on unfulfillable or 30-day backordered item.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Real-time regional fulfillment probe isolation (UNFULFILLED_PHANTOM).</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('TTN-DRILL-PHANTOM')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">6</span><span class="edge-name">Highly Disparate Category Taxonomies</span></div>
+              <p class="edge-desc">Retailer A lists footrest in Furniture; Retailer B lists under Medical.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Zero-shot projection into canonical Global Product Classification (GPC).</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('NOV-CHAIR-ERGOPRO')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">7</span><span class="edge-name">Hyper-Volatile Currency & Regional Tiering</span></div>
+              <p class="edge-desc">Cross-border competitors dynamically peg prices to volatile spot FX rates.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> Localized geo-scraping + timestamped spot FX normalization.</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('APX-AURA-99')">Test Scenario</button>
+            </div>
+
+            <div class="edge-card">
+              <div class="edge-card-header"><span class="edge-num">8</span><span class="edge-name">Conflicting Multimodal Information</span></div>
+              <p class="edge-desc">Title says '2026 Edition', but hero image shows 2024 chassis with reviews.</p>
+              <div class="edge-solution"><strong>Mitigation:</strong> 4-Tier Hierarchy of Truth arbitration (CONTRADICTORY_LISTING to HITL).</div>
+              <button class="btn btn-secondary btn-xs mt-12" onclick="testEdgeCase('APX-CLASH-NORDIC')">Test Scenario</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Chaos Engineering & Synthetic Attack Sandbox</h2>
+              <p class="panel-subtitle">Inject live perturbations to verify agentic defense, honeypot isolation, and drift alerts</p>
+            </div>
+            <div class="panel-controls">
+              <button class="btn btn-secondary btn-sm" onclick="resetChaosEvents()">Reset Attacks</button>
+            </div>
+          </div>
+
+          <div class="chaos-sandbox-grid">
+            <div class="chaos-action-box">
+              <h4 class="chaos-title">Adversarial Honeypot Shock</h4>
+              <p class="chaos-desc">Simulate a competitor feeding a fake 50% price crash across 100 SKUs.</p>
+              <button class="btn btn-danger btn-sm" onclick="injectChaosAttack('HONEYPOT_PRICE_COLLAPSE')">Inject Honeypot Attack</button>
+            </div>
+
+            <div class="chaos-action-box">
+              <h4 class="chaos-title">Phantom Stock Flood</h4>
+              <p class="chaos-desc">Simulate competitor flooding out-of-stock listings with predatory pricing.</p>
+              <button class="btn btn-warning btn-sm" onclick="injectChaosAttack('PHANTOM_INVENTORY_SURGE')">Inject Phantom Flood</button>
+            </div>
+
+            <div class="chaos-action-box">
+              <h4 class="chaos-title">Currency & Inflation Shock</h4>
+              <p class="chaos-desc">Simulate spot FX volatility spike triggering covariate drift warning.</p>
+              <button class="btn btn-secondary btn-sm" onclick="injectChaosAttack('CURRENCY_SHOCK')">Inject FX Shock</button>
+            </div>
+          </div>
+
+          <div class="chaos-status-banner mt-16" id="chaos-status-banner">
+            <span class="badge badge-success">Defense Active: 0 Quarantined</span>
+            <span class="text-muted" style="margin-left:12px;">System monitoring edge streams with zero false repricing executions.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- TELEMETRY TAB F: DATASET STUDIO & GOLDEN EVAL -->
+      <!-- ============================================================= -->
+      <section class="tab-content" id="view-studio">
+        <!-- HITL Review Queue -->
+        <div class="card panel-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Human-in-the-Loop (HITL) Gatekeeper Review Queue</h2>
+              <p class="panel-subtitle">Category Merchandiser arbitration for ambiguous or contradictory listings</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="fetchHitlQueue()">Refresh Queue</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="hitl-table">
+              <thead>
+                <tr>
+                  <th>Task ID</th>
+                  <th>Competitor SKU</th>
+                  <th>Suggested Match</th>
+                  <th>Verdict</th>
+                  <th>Confidence</th>
+                  <th>Escalation Reason</th>
+                  <th>Analyst Action</th>
+                </tr>
+              </thead>
+              <tbody id="hitl-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 20,000+ Dataset Studio -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Enterprise Dataset Studio (20,000+ Data Points)</h2>
+              <p class="panel-subtitle">Synthesize multi-category enterprise datasets across 48 retail competitors or ingest real-world scraped feeds</p>
+            </div>
+            <div class="panel-controls">
+              <span class="badge badge-success" id="dataset-active-status">Active Scale: 20,000 Data Points (48 Competitors)</span>
+            </div>
+          </div>
+
+          <div class="studio-actions-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+            <div class="action-card" style="background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); padding:16px; border-radius:10px;">
+              <h4 class="action-card-title" style="color:#fff; font-size:0.95rem; margin-bottom:6px;">Generate 20,000+ Enterprise Dataset</h4>
+              <p class="action-card-desc" style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Generate 20,000+ structured records: 48 competitors, 10 categories, OEM relationships, and time-series historical price observations.</p>
+              <button class="btn btn-primary btn-sm" onclick="generateLargeEnterpriseDataset(20000)">
+                Generate 20,000 Data Points
+              </button>
+            </div>
+
+            <div class="action-card" style="background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); padding:16px; border-radius:10px;">
+              <h4 class="action-card-title" style="color:#fff; font-size:0.95rem; margin-bottom:6px;">High-Velocity Stress Test (50,000 Pts)</h4>
+              <p class="action-card-desc" style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Scale to 50,000 historical price observations with heavy volatility to stress-test vector indexes and drift radar.</p>
+              <button class="btn btn-secondary btn-sm" onclick="generateLargeEnterpriseDataset(50000)">
+                Generate 50,000 Stress Dataset
+              </button>
+            </div>
+
+            <div class="action-card" style="background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); padding:16px; border-radius:10px;">
+              <h4 class="action-card-title" style="color:#fff; font-size:0.95rem; margin-bottom:6px;">Load Real-World Scraped Feed</h4>
+              <p class="action-card-desc" style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Ingest raw real-world multi-retailer e-commerce scrape dump and re-index the Knowledge Graph & Vector Store in real time.</p>
+              <button class="btn btn-secondary btn-sm" onclick="loadRealWorldScrapeData()">
+                Load Real Scraped Feed
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Golden Benchmark Studio -->
+        <div class="card panel-card mt-24">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h2 class="panel-title">Curated Golden Benchmark Evaluation Suite</h2>
+              <p class="panel-subtitle">Continuous automated evaluation against ground-truth challenge classes with live pipeline execution</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="runGoldenEval()">
+              Run Golden Benchmark Suite
+            </button>
+          </div>
+
+          <div class="benchmark-results-container mt-16" id="benchmark-results-view" style="display:none;">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Benchmark ID</th>
+                    <th>Competitor SKU</th>
+                    <th>Challenge Class</th>
+                    <th>Expected</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="benchmark-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span>AURORA ENTERPRISE PLATFORM v1.0.0</span>
+        <span class="footer-sep">|</span>
+        <span>20,000+ DATA POINTS &bull; 48 RETAIL COMPETITORS &bull; 10 PRODUCT SECTORS</span>
+      </div>
+      <div class="footer-right">
+        <span>Cloud-Native: Google Cloud Platform (Vertex AI, Spanner Graph, Cloud Run) & AWS Bedrock</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
