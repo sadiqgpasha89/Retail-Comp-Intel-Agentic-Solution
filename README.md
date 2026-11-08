@@ -5,6 +5,8 @@
 [![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB.svg)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](#)
 
+🌐 **Project page (use case walkthrough): [https://sadiqgpasha89.github.io/Retail-Comp-Intel-Agentic-Solution/](https://sadiqgpasha89.github.io/Retail-Comp-Intel-Agentic-Solution/)**
+
 A high-throughput, low-latency enterprise intelligence platform engineered to autonomously discover competitor assortments, resolve obscured SKU identities, uncover dynamic hidden cart discounts, detect adversarial honeypots and phantom inventory, and generate auditable strategic counter-actions.
 
 ---

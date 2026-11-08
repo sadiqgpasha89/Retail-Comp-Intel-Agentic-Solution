@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AURORA Retail Competitor Intelligence | Agentic Solution</title>
+<meta name="description" content="An autonomous, tri-tier hybrid AI platform that discovers competitor assortments, resolves SKU identities, uncovers hidden discounts, and recommends margin-protecting actions.">
+<style>
+  :root {
+    --bg: #f7f8fb; --surface: #ffffff; --ink: #121826; --muted: #566074; --line: #e2e6ee;
+    --brand: #2f5bea; --brand-ink: #ffffff; --accent: #0f9d8a; --warn: #c2650a;
+    --t1: #0f9d8a; --t2: #2f5bea; --t3: #8a4fd6; --t4: #c2650a;
+    --shadow: 0 1px 2px rgba(18,24,38,.06), 0 8px 24px rgba(18,24,38,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d111a; --surface: #151b27; --ink: #e8ecf5; --muted: #9aa5ba; --line: #263044;
+      --brand: #6c8cff; --brand-ink: #0d111a; --accent: #3ed1bb; --warn: #f2a65a;
+      --t1: #3ed1bb; --t2: #6c8cff; --t3: #b48cf5; --t4: #f2a65a;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--brand); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  header.nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; flex-wrap: wrap; }
+  .nav strong { letter-spacing: .04em; }
+  .nav nav { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; }
+  .nav nav a { color: var(--muted); text-decoration: none; }
+  .nav nav a:hover { color: var(--ink); }
+  .hero { padding: 72px 0 48px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.12; margin: 12px 0 16px; max-width: 18em; }
+  .lead { font-size: 19px; color: var(--muted); max-width: 44em; }
+  .cta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 11px 18px; border-radius: 10px; font-weight: 600; text-decoration: none;
+    border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+  .btn.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+  section { padding: 48px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 28px; margin: 0 0 8px; }
+  .sub { color: var(--muted); max-width: 46em; margin: 0 0 28px; }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); }
+  .card h3 { margin: 0 0 6px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .stat { font-size: 32px; font-weight: 700; line-height: 1.1; }
+  .stat-label { color: var(--muted); font-size: 14px; }
+  .tier { border-left: 5px solid var(--c); }
+  .tier .tag { color: var(--c); font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  .tier code { background: color-mix(in srgb, var(--c) 12%, transparent); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+  .before-after { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .before-after ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .diagram { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; text-align: center; }
+  .diagram img { max-width: 100%; max-height: 720px; height: auto; }
+  .diagram figcaption { color: #566074; font-size: 14px; margin-top: 8px; }
+  pre { background: #0d111a; color: #e8ecf5; padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 14px; }
+  .pill { display: inline-block; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--muted); margin: 0 6px 6px 0; background: var(--surface); }
+  .steps { counter-reset: s; display: grid; gap: 12px; }
+  .steps li { list-style: none; counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px 56px; position: relative; }
+  .steps li::before { content: counter(s); position: absolute; left: 16px; top: 12px; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+  .steps { padding: 0; margin: 0; }
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <strong>AURORA · Retail Intel</strong>
+    <nav>
+      <a href="#usecase">Use case</a>
+      <a href="#how">How it works</a>
+      <a href="#agents">Agents</a>
+      <a href="#actions">Actions</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#start">Quick start</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Agentic AI · Retail · Competitive Intelligence</div>
+    <h1>Know what competitors are really selling, and what to do about it.</h1>
+    <p class="lead">AURORA autonomously discovers competitor assortments, resolves obscured SKU identities, uncovers hidden cart discounts, catches honeypots and phantom inventory, and turns the findings into auditable, margin-protecting actions.</p>
+    <div class="cta">
+      <a class="btn primary" href="#usecase">Understand the use case</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution">View the code on GitHub</a>
+    </div>
+  </div>
+
+  <section id="scale" style="border-top:0;padding-top:0">
+    <div class="grid g3">
+      <div class="card"><div class="stat">48</div><div class="stat-label">retail competitors monitored</div></div>
+      <div class="card"><div class="stat">10</div><div class="stat-label">harmonized product categories</div></div>
+      <div class="card"><div class="stat">20,000+</div><div class="stat-label">data points per full pipeline run</div></div>
+    </div>
+  </section>
+
+  <section id="usecase">
+    <h2>The use case</h2>
+    <p class="sub">Retailers react to competitor prices every day, but the prices they see are often misleading. Reacting to the wrong signal erodes margin.</p>
+    <div class="before-after">
+      <div class="card">
+        <h3>The problem</h3>
+        <ul>
+          <li>Competitor SKUs rarely share your product IDs, so matching "the same item" is guesswork.</li>
+          <li>Titles lie: a "3-Pack Bundle" priced like a single unit looks like a price cut.</li>
+          <li>Real prices hide in the cart: coupons, vouchers and basket discounts.</li>
+          <li>Honeypot pages and phantom (out-of-stock or backordered) listings trick repricers into matching prices nobody can buy at.</li>
+          <li>Private-label products can be the same factory item under a different brand.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What AURORA does</h3>
+        <ul>
+          <li>Matches SKUs by barcode first, then ML similarity, then multi-agent reasoning for the hard cases.</li>
+          <li>Simulates a real shopper to find the true checkout price, including hidden discounts.</li>
+          <li>Quarantines honeypots and verifies stock before any price is trusted.</li>
+          <li>Links private-label products to shared OEM factories and patents through a knowledge graph.</li>
+          <li>Recommends a commercial action with revenue and gross-margin impact, and escalates doubtful cases to a human.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How it works: the tri-tier hybrid</h2>
+    <p class="sub">Cheap, certain methods handle most SKUs. Expensive reasoning is reserved for the ambiguous few. <code>τ</code> is the match confidence score.</p>
+    <div class="grid g2">
+      <div class="card tier" style="--c:var(--t1)"><div class="tag">Tier 1 · Rules</div><h3>Deterministic matching</h3>
+        <p>Exact GTIN/UPC/EAN checksum matches (<code>τ = 1.0</code>), hard brand gates, category boundaries, and honeypot quarantine. Sub-millisecond, zero cost.</p></div>
+      <div class="card tier" style="--c:var(--t2)"><div class="tag">Tier 2 · Classical ML</div><h3>Embeddings and scoring</h3>
+        <p>Multimodal bi-encoder (text + image + attributes), ANN retrieval, and a cross-encoder. <code>τ ≥ 0.92</code> auto-commits. Isolation Forest flags predatory pricing and repricer oscillation.</p></div>
+      <div class="card tier" style="--c:var(--t3)"><div class="tag">Tier 3 · Agents</div><h3>Multi-agent reasoning</h3>
+        <p>For <code>0.65 ≤ τ &lt; 0.92</code>, a Supervisor runs a Plan, Execute, Reflect, Report loop with specialist agents and a truth-hierarchy guardrail.</p></div>
+      <div class="card tier" style="--c:var(--t4)"><div class="tag">Tier 4 · Human</div><h3>Merchandiser review</h3>
+        <p>Low confidence (<code>τ &lt; 0.65</code>) or conflicting evidence goes to a review queue. Decisions feed back into drift monitoring and retraining.</p></div>
+    </div>
+  </section>
+
+  <section id="agents">
+    <h2>The agent mesh</h2>
+    <p class="sub">Specialist agents work in sandboxes and report to a supervisor that manages a convergence budget.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Supervisor</h3><p>Decomposes the task, schedules sub-agents, and decides when the evidence has converged.</p></div>
+      <div class="card"><h3>Matcher</h3><p>Arbitrates ambiguous matches, links private labels to OEM factories via the knowledge graph, and inspects packaging with OCR.</p></div>
+      <div class="card"><h3>Promo</h3><p>Plays the shopper: clips coupons, builds a basket, and detects hidden discounts and MAP evasion.</p></div>
+      <div class="card"><h3>Strategy</h3><p>Forms a causal hypothesis (predatory undercut, liquidation, or phantom lure) and models revenue and margin impact.</p></div>
+      <div class="card"><h3>Reflection Guard</h3><p>Enforces a 4-tier hierarchy of truth so marketing text can never override physical evidence.</p></div>
+      <div class="card">
+        <h3>Hierarchy of truth</h3>
+        <p>1. Review photos &gt; 2. Spec tables &amp; GTIN &gt; 3. Hero imagery &gt; 4. Marketing titles</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="actions">
+    <h2>From insight to action</h2>
+    <p class="sub">Every finding becomes a merchandising directive an executive can approve.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Auto-reprice volume defense</h3><p>Match a rival undercut on elastic, high-velocity SKUs while margin headroom remains.</p></div>
+      <div class="card"><h3>Hold margin &amp; phantom defense</h3><p>Lock a SKU against price-matching when the rival offer is a backordered or unfulfillable lure.</p></div>
+      <div class="card"><h3>Enforce MAP policy</h3><p>Send timestamped page and screenshot evidence to brand compliance.</p></div>
+      <div class="card"><h3>OEM store-brand arbitrage</h3><p>Highlight physical equivalence to a shared-factory private label and capture switchers at higher margin.</p></div>
+      <div class="card"><h3>Basket builder cross-sell</h3><p>Bundle a high-margin accessory when core price is at parity to raise average order value.</p></div>
+      <div class="card"><h3>Cross-price elasticity simulator</h3><p>Slide a competitor price cut and compare "price match" against "hold margin" in the app.</p></div>
+    </div>
+  </section>
+
+  <section id="edge">
+    <h2>Eight edge cases it is built to survive</h2>
+    <p class="sub">Each is covered by tests and by a chaos sandbox in the UI.</p>
+    <div>
+      <span class="pill">Honeypots</span><span class="pill">Deceptive 3-packs</span><span class="pill">OEM clones</span>
+      <span class="pill">Hidden cart vouchers</span><span class="pill">Phantom stock</span><span class="pill">Taxonomy clashes</span>
+      <span class="pill">Spot FX volatility</span><span class="pill">Multimodal mismatches</span>
+    </div>
+  </section>
+
+  <section id="metrics">
+    <h2>Measured across five planes</h2>
+    <p class="sub">Plus a drift radar using PSI, Wasserstein distance, and the Page-Hinkley test.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Business impact</h3><p>Time-to-discovery, assortment coverage, gross margin protected, opportunity capture velocity.</p></div>
+      <div class="card"><h3>Agentic reasoning</h3><p>Plan optimality, tool selection accuracy, self-correction convergence, escalation rate.</p></div>
+      <div class="card"><h3>LLM &amp; RAG quality</h3><p>Faithfulness, context precision and recall, hallucination rate.</p></div>
+      <div class="card"><h3>Classical ML</h3><p>Recall@5, PR-AUC, F1, embedding alignment, drift scores.</p></div>
+      <div class="card"><h3>Infrastructure</h3><p>P50/P95/P99 latency, throughput in SKUs per second, scrape reliability, cost per SKU.</p></div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <h2>Architecture</h2>
+    <p class="sub">A six-stage lifecycle: perimeter discovery, multimodal ingestion, entity resolution, anomaly detection, causal synthesis, and action orchestration. It runs on a local open stack or on GCP, with an AWS reference design.</p>
+    <div class="grid g2">
+      <figure class="diagram" style="margin:0"><a href="assets/3-tier-Decision.png"><img src="assets/3-tier-Decision.png" alt="Decision flow from incoming SKU through the three tiers to a commercial decision" loading="lazy"></a><figcaption>Tri-tier decision flow</figcaption></figure>
+      <figure class="diagram" style="margin:0"><a href="assets/E2E-aurora-workflow.png"><img src="assets/E2E-aurora-workflow.png" alt="End-to-end AURORA workflow" loading="lazy"></a><figcaption>End-to-end workflow</figcaption></figure>
+    </div>
+    <p style="margin-top:16px"><a href="assets/system-arch-mermaid.png">Open the full system architecture diagram</a></p>
+    <div style="margin-top:12px">
+      <span class="pill">Python 3.12 / 3.13</span><span class="pill">FastAPI</span><span class="pill">Server-Sent Events</span>
+      <span class="pill">NetworkX knowledge graph</span><span class="pill">HNSW vector search</span><span class="pill">Isolation Forest</span>
+      <span class="pill">Three.js 3D graph</span><span class="pill">Docker</span><span class="pill">GCP · Vertex AI · BigQuery</span>
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>Quick start</h2>
+    <p class="sub">Runs locally with synthetic data. No cloud account needed.</p>
+    <pre><code>git clone https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution.git
+cd Retail-Comp-Intel-Agentic-Solution
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+make install
+make run        # open http://localhost:8000</code></pre>
+    <h3 style="margin-top:28px">Take the tour once it is running</h3>
+    <ol class="steps">
+      <li><strong>Causal War Room.</strong> See gross margin protected and try the elasticity simulator.</li>
+      <li><strong>Market Intelligence.</strong> Click "Inspect" on any SKU for a side-by-side comparison.</li>
+      <li><strong>Multi-Agent Mesh.</strong> Pick a challenge SKU and click "Stream Thoughts" to watch the agents reason live.</li>
+      <li><strong>Chaos Sandbox.</strong> Inject a honeypot price collapse or currency shock and watch the system respond.</li>
+    </ol>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution">Source on GitHub</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/USER_GUIDE.md">User guide</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/ARCHITECTURE.md">Architecture record</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/DATA_DICTIONARY.md">Data dictionary</a>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">AURORA Retail Competitor Intelligence · Licensed under the repository's LICENSE · Built by
+    <a href="https://github.com/sadiqgpasha89">sadiqgpasha89</a></div>
+</footer>
+
+</body>
+</html>
