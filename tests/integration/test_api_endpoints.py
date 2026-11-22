@@ -104,18 +104,67 @@ def test_recommendations_endpoints(test_client):
     assert "causal_intent" in orch_data
     assert "directive_action" in orch_data
 
-    # Test POST /api/v1/recommendations/approve
-    res_appr = test_client.post(
-        "/api/v1/recommendations/approve",
-        json={
-            "recommendation_id": "REC-0001",
-            "action_type": "AUTO_REPRICE_VOLUME_DEFENSE",
-            "target_sku": "INT-EL-002",
-            "approved_price": 1599.00
-        }
-    )
-    assert res_appr.status_code == 200
-    assert res_appr.json()["status"] == "APPROVED_AND_QUEUED"
+
+ANALYST = {"X-Actor-Id": "ana", "X-Actor-Role": "analyst"}
+MANAGER = {"X-Actor-Id": "pm", "X-Actor-Role": "pricing_manager"}
+
+
+@pytest.mark.integration
+def test_recommendation_lifecycle_is_governed(test_client):
+    actions = test_client.get("/api/v1/recommendations").json()["top_actions"]
+    assert actions and all(a["workflow_id"] for a in actions)
+    rid = actions[0]["workflow_id"]
+
+    # An unidentified (viewer) caller can neither review nor approve
+    assert test_client.post(f"/api/v1/recommendations/{rid}/review", json={}).status_code == 403
+    # Approval before review is an invalid transition
+    assert test_client.post(f"/api/v1/recommendations/{rid}/approve", json={}, headers=MANAGER).status_code == 409
+
+    assert test_client.post(f"/api/v1/recommendations/{rid}/review", json={}, headers=ANALYST).status_code == 200
+    # An analyst may review but not approve
+    assert test_client.post(f"/api/v1/recommendations/{rid}/approve", json={}, headers=ANALYST).status_code == 403
+
+    # A manager's approval either succeeds or is blocked by policy (margin floor/MAP/bounds); never silently passes
+    res = test_client.post(f"/api/v1/recommendations/{rid}/approve", json={}, headers=MANAGER)
+    assert res.status_code in (200, 422)
+    if res.status_code == 422:
+        assert res.json()["detail"]["error"] == "POLICY_BLOCKED"
+        return
+
+    body = {"idempotency_key": "integration-key-1"}
+    dry = test_client.post(f"/api/v1/recommendations/{rid}/execute", json=body, headers=MANAGER)
+    assert dry.status_code == 200 and dry.json()["dry_run"] is True
+    live = test_client.post(f"/api/v1/recommendations/{rid}/execute",
+                            json={"idempotency_key": "integration-key-2", "dry_run": False}, headers=MANAGER)
+    assert live.status_code == 409          # writes are disabled and no integration ships
+
+    assert test_client.get("/api/v1/audit/verify").json()["intact"] is True
+
+
+@pytest.mark.integration
+def test_metrics_report_only_measured_values(test_client):
+    data = test_client.get("/api/v1/metrics").json()
+    # No hardcoded offline-model figures
+    assert "bi_encoder_recall_at_5" not in data["ml_system"]
+    assert "faithfulness_score_avg" not in data["rag_quality"]
+
+
+@pytest.mark.integration
+def test_hitl_queue_has_no_injected_demo_tasks(test_client):
+    # A fresh app has no escalations, so the queue is empty (the old demo seeding is gone)
+    assert test_client.get("/api/v1/hitl/queue").json() == []
+    assert test_client.post("/api/v1/hitl/resolve/does-not-exist", json={"decision": "APPROVE"}).status_code == 404
+
+
+@pytest.mark.integration
+def test_run_eval_scores_the_live_pipeline(test_client):
+    res = test_client.post("/api/v1/pipelines/run-eval")
+    assert res.status_code == 200
+    report = res.json()
+    assert report["total_benchmarks"] == 8
+    # Real accuracy, not an oracle: assert it is computed and consistent, not that it is perfect
+    assert report["passed_count"] + report["failed_count"] == 8
+    assert 0.0 <= report["accuracy"] <= 1.0
 
 
 @pytest.mark.integration

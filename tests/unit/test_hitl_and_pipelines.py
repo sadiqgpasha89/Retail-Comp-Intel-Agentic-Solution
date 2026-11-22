@@ -6,7 +6,7 @@ from retail_intel.llmops.guardrails import LLMGuardrails
 from retail_intel.llmops.golden_eval import GoldenBenchmarkRunner
 from retail_intel.mlops.validation import DataContractValidator
 from retail_intel.mlops.registry import ModelRegistry
-from retail_intel.data_engineering.ingestion.ingestion_pipeline import IngestionPipeline, IngestionPayload
+from retail_intel.data_engineering.ingestion.ingestion_pipeline import IngestionPipeline
 from retail_intel.data_engineering.stream.stream_broker import StreamBroker, StreamMessage
 
 

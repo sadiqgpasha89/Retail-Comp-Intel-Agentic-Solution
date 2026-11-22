@@ -30,6 +30,29 @@ def test_metrics_engine_computation():
     assert metrics.business.exact_match_rate == 1.0
     assert metrics.agentic.plan_optimality_ratio_avg > 0.5
     assert metrics.agentic.total_agentic_escalations == 1
-    assert metrics.ml_system.bi_encoder_recall_at_5 >= 0.90
+    assert metrics.ml_system.psi_distribution_score == pytest.approx(0.035, rel=1e-3)
     assert metrics.ml_system.psi_distribution_score == pytest.approx(0.035, rel=1e-3)
     assert metrics.infrastructure.active_catalog_size == 10
+
+
+@pytest.mark.unit
+def test_unmeasured_metrics_are_omitted_not_invented():
+    metrics = MetricsEngine().compute_metrics()
+    assert metrics.business.exact_match_rate is None
+    assert metrics.business.gross_margin_protected_usd is None
+    assert metrics.agentic.plan_optimality_ratio_avg is None
+    assert metrics.infrastructure.end_to_end_latency_p99_ms is None
+    # nothing is reported for offline model-quality metrics the engine cannot measure
+    assert not hasattr(metrics.ml_system, "bi_encoder_recall_at_5")
+    assert metrics.rag_quality.faithfulness_score_avg is None
+
+
+@pytest.mark.unit
+def test_latency_p99_is_computed_from_observed_durations():
+    engine = MetricsEngine()
+    for ms in range(1, 101):
+        engine.record_analysis(verdict="EXACT_MATCH", duration_ms=float(ms))
+    m = engine.compute_metrics()
+    assert m.infrastructure.end_to_end_latency_p99_ms == 99.0
+    assert m.infrastructure.latency_sample_count == 100
+    assert m.business.exact_match_rate == 1.0

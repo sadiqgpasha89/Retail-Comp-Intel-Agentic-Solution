@@ -1,6 +1,5 @@
 """Unit tests for the Retail Merchandising & Pricing Recommendation Engine."""
 
-import pytest
 from retail_intel.datascience.recommendation_engine import RecommendationEngine, RecommendationsSummary
 from retail_intel.data_engineering.dataset_generator import DatasetGenerator
 

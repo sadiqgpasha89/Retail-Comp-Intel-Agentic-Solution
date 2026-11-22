@@ -1,6 +1,6 @@
 """HITL controller: review queue and analyst decision submissions."""
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Request
 
@@ -22,25 +22,8 @@ class HITLResolveRequest(BaseModel):
 async def get_hitl_queue(request: Request):
     """Returns pending ambiguous SKU matches requiring human merchant review."""
     state = get_app_state(request)
-    tasks = state.hitl_queue.get_pending_tasks()
-    if not tasks:
-        # If empty, ensure default edge cases are present for interactive demo
-        state.hitl_queue.enqueue_task(
-            competitor_sku="APX-CLASH-NORDIC",
-            internal_sku_candidate="INT-FURN-001",
-            tau_score=0.68,
-            escalation_reason="Multimodal conflict: Title states '2026 Edition', hero image exhibits 2024 chassis with reviews.",
-            agentic_evidence={"verdict": "CONTRADICTORY_LISTING", "confidence": 0.68}
-        )
-        state.hitl_queue.enqueue_task(
-            competitor_sku="APX-COF-3PK-AMBIG",
-            internal_sku_candidate="INT-COF-001",
-            tau_score=0.72,
-            escalation_reason="Deceptive multipack: 3-pack coffee pods listed at single-unit price without explicit pack badge.",
-            agentic_evidence={"verdict": "DECEPTIVE_MULTIPACK", "confidence": 0.72}
-        )
-        tasks = state.hitl_queue.get_pending_tasks()
-    return tasks
+    # Only real escalations appear here (Tier-3 results that need a human). No demo tasks are injected.
+    return state.hitl_queue.get_pending_tasks()
 
 
 @router.post("/decision", response_model=HITLTask)
@@ -67,6 +50,6 @@ async def resolve_hitl_task(task_id: str, req: HITLResolveRequest, request: Requ
     )
     task = state.hitl_queue.submit_decision(decision)
     if not task:
-        return {"status": "RESOLVED", "task_id": task_id, "decision": req.decision}
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
     state.drift_radar.record_match_feedback(is_correct=(req.decision in ["APPROVE", "CONFIRM"]))
     return task

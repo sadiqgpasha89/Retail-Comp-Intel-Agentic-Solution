@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AURORA Retail Competitor Intelligence | Agentic Solution</title>
-<meta name="description" content="An autonomous, tri-tier hybrid AI platform that discovers competitor assortments, resolves SKU identities, uncovers hidden discounts, and recommends margin-protecting actions.">
+<meta name="description" content="A four-tier hybrid AI platform (demo on synthetic data) that resolves competitor SKU identities, computes promotion-adjusted effective prices, and recommends margin-protecting actions for human approval.">
 <style>
   :root {
     --bg: #f7f8fb; --surface: #ffffff; --ink: #121826; --muted: #566074; --line: #e2e6ee;
@@ -93,7 +93,7 @@
   <div class="hero">
     <div class="eyebrow">Agentic AI · Retail · Competitive Intelligence</div>
     <h1>Know what competitors are really selling, and what to do about it.</h1>
-    <p class="lead">AURORA autonomously discovers competitor assortments, resolves obscured SKU identities, uncovers hidden cart discounts, catches honeypots and phantom inventory, and turns the findings into auditable, margin-protecting actions.</p>
+    <p class="lead">AURORA helps discover competitor assortments, resolves obscured SKU identities, uncovers hidden cart discounts, catches honeypots and phantom inventory, and turns the findings into auditable, margin-protecting actions.</p>
     <div class="cta">
       <a class="btn primary" href="#usecase">Understand the use case</a>
       <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution">View the code on GitHub</a>
@@ -136,7 +136,7 @@
   </section>
 
   <section id="how">
-    <h2>How it works: the tri-tier hybrid</h2>
+    <h2>How it works: the four-tier hybrid</h2>
     <p class="sub">Cheap, certain methods handle most SKUs. Expensive reasoning is reserved for the ambiguous few. <code>τ</code> is the match confidence score.</p>
     <div class="grid g2">
       <div class="card tier" style="--c:var(--t1)"><div class="tag">Tier 1 · Rules</div><h3>Deterministic matching</h3>
@@ -205,7 +205,7 @@
     <h2>Architecture</h2>
     <p class="sub">A six-stage lifecycle: perimeter discovery, multimodal ingestion, entity resolution, anomaly detection, causal synthesis, and action orchestration. It runs on a local open stack or on GCP, with an AWS reference design.</p>
     <div class="grid g2">
-      <figure class="diagram" style="margin:0"><a href="assets/3-tier-Decision.png"><img src="assets/3-tier-Decision.png" alt="Decision flow from incoming SKU through the three tiers to a commercial decision" loading="lazy"></a><figcaption>Tri-tier decision flow</figcaption></figure>
+      <figure class="diagram" style="margin:0"><a href="assets/3-tier-Decision.png"><img src="assets/3-tier-Decision.png" alt="Decision flow from incoming SKU through the three tiers to a commercial decision" loading="lazy"></a><figcaption>Four-tier decision flow</figcaption></figure>
       <figure class="diagram" style="margin:0"><a href="assets/E2E-aurora-workflow.png"><img src="assets/E2E-aurora-workflow.png" alt="End-to-end AURORA workflow" loading="lazy"></a><figcaption>End-to-end workflow</figcaption></figure>
     </div>
     <p style="margin-top:16px"><a href="assets/system-arch-mermaid.png">Open the full system architecture diagram</a></p>
@@ -214,6 +214,17 @@
       <span class="pill">NetworkX knowledge graph</span><span class="pill">HNSW vector search</span><span class="pill">Isolation Forest</span>
       <span class="pill">Three.js 3D graph</span><span class="pill">Docker</span><span class="pill">GCP · Vertex AI · BigQuery</span>
     </div>
+  </section>
+
+  <section id="status">
+    <h2>Status and limits</h2>
+    <p class="sub">What this repository does and does not claim.</p>
+    <ul>
+      <li>All data is synthetic demo data. No live competitor feed is connected; nothing is scraped.</li>
+      <li>The LLM layer is simulated unless you configure a provider. Match accuracy on the 8-case golden set is measured live (7/8 at the time of writing), not asserted.</li>
+      <li>Recommendations only: approval is a decision record, execution is a dry run, and downstream writes are disabled by default.</li>
+      <li>See the capability matrix for every feature marked implemented, partial, mocked or missing.</li>
+    </ul>
   </section>
 
   <section id="start">
@@ -233,9 +244,14 @@ make run        # open http://localhost:8000</code></pre>
     </ol>
     <div class="cta">
       <a class="btn primary" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution">Source on GitHub</a>
-      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/USER_GUIDE.md">User guide</a>
-      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/ARCHITECTURE.md">Architecture record</a>
-      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/DATA_DICTIONARY.md">Data dictionary</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/USER_GUIDE.md">User guide</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/SADR.md">Architecture decisions</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/CAPABILITY_MATRIX.md">Capability matrix</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/BRD.md">BRD</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/FSD.md">FSD</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/TSD.md">TSD</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/docs/DATA_DICTIONARY.md">Data dictionary</a>
+      <a class="btn" href="https://github.com/sadiqgpasha89/Retail-Comp-Intel-Agentic-Solution/blob/main/diagrams/README.md">Diagrams</a>
     </div>
   </section>
 

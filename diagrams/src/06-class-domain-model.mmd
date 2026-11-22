@@ -1,0 +1,95 @@
+classDiagram
+    class Provenance {
+        +tenant_id
+        +source_id
+        +competitor_id
+        +collection_method
+        +retrieved_at
+        +parser_version
+        +payload_hash
+        +evidence_uri
+        +run_id
+    }
+    class Observation {
+        +observation_id
+        +kind: price|availability|promotion
+        +listing_id
+        +region
+        +currency
+        +observed_at
+        +values
+        +quality_flags
+        +is_usable()
+    }
+    class CompetitorSource {
+        +source_id
+        +source_type
+        +currency
+        +priority
+        +freshness_sla_hours
+    }
+    class SourcePolicy {
+        +permitted
+        +basis
+        +revoked_at
+        +rate_limit_per_minute
+        +allowed_actions
+    }
+    class ComplianceGate {
+        +assert_allowed(source, action)
+    }
+    class EffectivePrice {
+        +list_price
+        +effective
+        +breakdown
+        +assumptions
+    }
+    class Recommendation {
+        +recommendation_id
+        +rec_type
+        +internal_sku
+        +proposed_price
+        +evidence_ids
+        +assumptions
+        +estimate | estimate_gap
+        +status
+        +expires_at
+    }
+    class PolicyEngine {
+        +check(rec, ctx) violations
+    }
+    class RecommendationWorkflow {
+        +propose()
+        +review()
+        +approve()
+        +reject()
+        +execute(dry_run=True)
+        +record_outcome()
+    }
+    class AuditEvent {
+        +event_id
+        +actor
+        +action
+        +entity_id
+        +prev_hash
+        +hash
+    }
+    class AuditLog {
+        +record()
+        +verify()
+    }
+    class ObservationStore {
+        +append_observation()
+        +history(as_of)
+        +put_evidence()
+    }
+    Observation "1" --> "1" Provenance
+    CompetitorSource "1" --> "1" SourcePolicy
+    ComplianceGate ..> CompetitorSource : checks
+    RecommendationWorkflow --> Recommendation : manages
+    RecommendationWorkflow --> PolicyEngine : approval gate
+    RecommendationWorkflow --> AuditLog : records
+    AuditLog "1" --> "*" AuditEvent
+    ObservationStore ..> Observation : appends
+    Recommendation ..> Observation : cites evidence_ids
+    EffectivePrice ..> Observation : derived from

@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "retail-comp-intel-agentic"
-version = "1.1.0"
-description = "Enterprise Retail Competitor Intelligence: Autonomous Hybrid Agentic Solution"
+version = "1.2.0"
+description = "AURORA: retail competitor intelligence with hybrid (rules, ML, agents, human) product matching, promotion-adjusted pricing and governed recommendations"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "Retail AI & Merchandising Intelligence Engineering", email = "retail-ai@enterprise.internal"}
+    {name = "Sadiq G Pasha"}
 ]
 keywords = [
     "retail-intelligence",
@@ -45,7 +45,7 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.1.0",
-    "httpx2>=0.27.0",
+    "httpx>=0.27.0",
 ]
 
 gcp = [

@@ -1,6 +1,6 @@
 """Autonomous Strategic Reasoning & Causal Impact Agent."""
 
-from typing import Any, Dict, List, Optional
+from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -11,7 +11,16 @@ from retail_intel.data_engineering.normalization.normalization_pipeline import N
 logger = get_logger("agents.strategy")
 
 
+# Placeholder unit volumes used to turn a per-unit gap into a dollar figure. They are DEMO ASSUMPTIONS, not
+# measured sales; real impact needs internal sales/elasticity inputs (see domain.recommendations.estimate_margin_impact).
+ASSUMED_UNITS_PHANTOM = 50.0
+ASSUMED_UNITS_UNDERCUT = 30.0
+ASSUMED_UNITS_ROUTINE = 20.0
+
+
 class StrategicHypothesis(BaseModel):
+    """A *hypothesis* about why a competitor price looks the way it does. `causal_intent` is a label for the
+    most consistent explanation among a few rules; competitor intent cannot be verified from listing data."""
     competitor_sku: str
     target_internal_sku: str
     causal_intent: str  # "PREDATORY_UNDERCUTTING", "INVENTORY_LIQUIDATION", "PHANTOM_STOCK_LURE", "ROUTINE_COMPETITION"
@@ -51,7 +60,7 @@ class StrategyAgent:
 
         # Check Phantom Stock
         if fulfill_check.get("is_phantom_stock"):
-            margin_saved = max(0.0, diff_usd) * 50.0  # Estimated 50-unit protection
+            margin_saved = max(0.0, diff_usd) * ASSUMED_UNITS_PHANTOM
             return StrategicHypothesis(
                 competitor_sku=competitor_rec.sku,
                 target_internal_sku=internal_rec.sku,
@@ -61,15 +70,16 @@ class StrategyAgent:
                 recommended_action="ISOLATE_PHANTOM",
                 strategic_briefing=(
                     f"Competitor listed ${c_price:.2f} on {competitor_rec.title_clean}, but fulfillment is "
-                    f"backordered for {competitor_rec.fulfillment_latency_days} days. This is a phantom stock trap to "
-                    f"bait rival repricers. Action: Isolate competitor from dynamic repricer. Protected ${margin_saved:.2f} in gross margin."
+                    f"backordered for {competitor_rec.fulfillment_latency_days} days. Hypothesis: the price may not be "
+                    f"fulfillable (phantom inventory). Suggested action: exclude this offer from price-matching until "
+                    f"availability is confirmed. Illustrative exposure ${margin_saved:.2f} (assumes {ASSUMED_UNITS_PHANTOM:.0f} units, demo placeholder)."
                 ),
                 tools_executed=tools_executed,
             )
 
         # Check Predatory Undercutting below internal COGS
         if c_price < internal_cogs:
-            margin_risk = (i_price - internal_cogs) * 30.0
+            margin_risk = (i_price - internal_cogs) * ASSUMED_UNITS_UNDERCUT
             return StrategicHypothesis(
                 competitor_sku=competitor_rec.sku,
                 target_internal_sku=internal_rec.sku,
@@ -79,8 +89,8 @@ class StrategyAgent:
                 recommended_action="HOLD_MARGIN",
                 strategic_briefing=(
                     f"Competitor price of ${c_price:.2f} is below internal COGS (${internal_cogs:.2f}). "
-                    f"Matching will induce negative gross margins. Action: Hold price at ${i_price:.2f}, "
-                    f"preserving ${margin_risk:.2f} in protected profits."
+                    f"Matching would produce a negative gross margin. Suggested action: hold price at ${i_price:.2f}. "
+                    f"Illustrative exposure ${margin_risk:.2f} (assumes {ASSUMED_UNITS_UNDERCUT:.0f} units, demo placeholder)."
                 ),
                 tools_executed=tools_executed,
             )
@@ -92,11 +102,11 @@ class StrategyAgent:
                 target_internal_sku=internal_rec.sku,
                 causal_intent="ROUTINE_COMPETITION",
                 gross_margin_protected_usd=0.0,
-                margin_destruction_risk_usd=round(diff_usd * 20.0, 2),
+                margin_destruction_risk_usd=round(diff_usd * ASSUMED_UNITS_ROUTINE, 2),
                 recommended_action="AUTO_REPRICE",
                 strategic_briefing=(
                     f"Competitor active price ${c_price:.2f} is above COGS (${internal_cogs:.2f}). "
-                    f"Action: Auto-reprice internal SKU to ${c_price:.2f} to protect market share."
+                    f"Suggested action: review repricing toward ${c_price:.2f} (subject to margin floor and approval)."
                 ),
                 tools_executed=tools_executed,
             )

@@ -94,7 +94,7 @@ class SupervisorAgent:
             details={
                 "effective_price": promo_res.final_effective_price,
                 "mechanic": promo_res.promotional_mechanic,
-                "map_evaded": promo_res.is_map_policy_evaded,
+                "requires_map_review": promo_res.requires_map_review,
             },
             duration_ms=round((time.time() - t0) * 1000, 2),
         ))
@@ -184,7 +184,7 @@ class SupervisorAgent:
         summary = (
             f"Autonomous arbitration determined {competitor_rec.sku} is '{verdict}' "
             f"against internal SKU {candidate_internal_rec.sku} (Confidence: {matcher_res.confidence * 100:.1f}%). "
-            f"Causal Intent: {strat_res.causal_intent}. Action: {strat_res.recommended_action}. "
+            f"Intent hypothesis (unverified): {strat_res.causal_intent}. Action: {strat_res.recommended_action}. "
             f"Protected Margin: ${strat_res.gross_margin_protected_usd:.2f}."
         )
 

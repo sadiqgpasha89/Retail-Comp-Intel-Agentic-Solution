@@ -5,7 +5,6 @@ import uuid
 from typing import Callable
 
 from fastapi import Request, Response
-from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from retail_intel.core.logging import correlation_id_var, get_logger

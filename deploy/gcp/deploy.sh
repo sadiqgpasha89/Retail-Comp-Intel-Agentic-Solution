@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# UNVALIDATED scaffold: written but never executed against a real GCP project (see docs/CAPABILITY_MATRIX.md).
 set -e
 
 # Configuration
@@ -19,7 +20,7 @@ echo "Building and pushing Docker image to $REPO_URL..."
 
 # Assuming script is run from deploy/gcp, we build from the project root
 cd ../../
-gcloud builds submit --tag "$REPO_URL" -f docker/Dockerfile .
+gcloud builds submit --config deploy/gcp/cloudbuild.yaml --substitutions "_IMAGE=${REPO_URL}" .
 
 # 3. Update the Cloud Run service to deploy the newly pushed image
 echo "Deploying new revision to Cloud Run..."

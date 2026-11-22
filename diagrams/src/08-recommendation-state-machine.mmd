@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> PROPOSED : propose (system)
+    PROPOSED --> REVIEWED : review (analyst or above)
+    PROPOSED --> REJECTED : reject + reason
+    REVIEWED --> APPROVED : approve (pricing / category manager, admin)<br/>PolicyEngine must pass
+    REVIEWED --> REJECTED : reject + reason
+    REVIEWED --> REVIEWED : approval blocked by policy (audited)
+    APPROVED --> APPROVED : dry-run execute (default)
+    APPROVED --> ACTIONED : real execute<br/>needs WRITES_ENABLED + integration (none ships)
+    ACTIONED --> MEASURED : record outcome
+    PROPOSED --> EXPIRED : expires_at passed
+    REVIEWED --> EXPIRED : expires_at passed
+    APPROVED --> EXPIRED : expires_at passed
+    REJECTED --> [*]
+    MEASURED --> [*]
+    EXPIRED --> [*]

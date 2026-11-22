@@ -10,16 +10,20 @@ logger = get_logger("api.routes.metrics")
 router = APIRouter(prefix="/api/v1/metrics", tags=["metrics"])
 
 
-@router.get("", response_model=Comprehensive5PlaneMetrics)
+@router.get("", response_model=Comprehensive5PlaneMetrics, response_model_exclude_none=True)
 async def get_metrics(request: Request):
     """Returns real-time aggregated metrics across Business, Agentic, RAG, ML, and System planes."""
     state = get_app_state(request)
-    drift_rep = state.drift_radar.run_comprehensive_audit([
-        c.get("final_effective_price", 100.0) for c in state.competitor_raw_list
-    ])
+    prices = [
+        c["final_effective_price"]
+        for c in state.competitor_raw_list
+        if c.get("final_effective_price") is not None
+    ]
+    drift_rep = state.drift_radar.run_comprehensive_audit(prices) if prices else None
     return state.metrics_engine.compute_metrics(
-        psi_score=drift_rep.psi_score,
-        wasserstein_dist=drift_rep.wasserstein_embedding_distance,
+        psi_score=drift_rep.psi_score if drift_rep else None,
+        wasserstein_dist=drift_rep.wasserstein_embedding_distance if drift_rep else None,
         active_catalog_size=len(state.competitor_raw_list),
-        mapped_count=len(state.competitor_raw_list) - 1,
+        mapped_count=len(state.internal_records),
+        dlq_depth=None,
     )

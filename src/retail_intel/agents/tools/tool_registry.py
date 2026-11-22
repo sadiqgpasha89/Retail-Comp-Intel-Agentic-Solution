@@ -3,7 +3,7 @@
 import time
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from retail_intel.core.logging import get_logger
 from retail_intel.agents.graph.knowledge_graph import RetailKnowledgeGraph
@@ -92,7 +92,9 @@ class ToolRegistry:
             "cart_basket_reduction": cart_discount,
             "final_checkout_price": round(final_basket_price, 2),
             "effective_discount_pct": round((total_discount / max(0.01, base_price)) * 100, 2),
-            "map_policy_evasion_flag": total_discount > 0,
+            # A discount below list is NOT evidence of a MAP violation (the MAP price is not known here);
+            # it only means the effective price should be reviewed against MAP by a human.
+            "requires_map_review": total_discount > 0,
         }
 
     def verify_fulfillment_inventory(

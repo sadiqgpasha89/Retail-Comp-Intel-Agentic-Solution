@@ -47,7 +47,7 @@ class AppSettings(BaseSettings):
     # CORS — comma-separated list of allowed origins (never use "*" with credentials)
     allowed_origins: str = "http://localhost:3000,http://localhost:8000"
 
-    # Decision Boundaries (Tri-Tier Hybrid Split)
+    # Decision Boundaries (Four-tier hybrid split: rules, ML, agents, human review)
     auto_commit_threshold: float = 0.92
     agentic_escalation_threshold: float = 0.65
     reject_threshold: float = 0.40
@@ -84,6 +84,13 @@ class AppSettings(BaseSettings):
     database_url: str = "sqlite:///./data/retail_intel.db"
     vector_dimension: int = 64
     redis_url: str = "redis://localhost:6379/0"
+
+    # Governed domain layer (observations, audit, recommendation workflow)
+    tenant_id: str = "demo"
+    observation_db_path: str = ":memory:"      # set to a file path to persist observations/recommendations
+    writes_enabled: bool = False                # downstream writes stay OFF; no write integration ships by default
+    min_gross_margin_pct: float = 10.0          # policy floor, % of price
+    max_price_change_pct: float = 30.0          # policy bound on a single proposed change
 
     # Local storage directory for file-backed provider
     local_storage_dir: str = "./data/payload_store"

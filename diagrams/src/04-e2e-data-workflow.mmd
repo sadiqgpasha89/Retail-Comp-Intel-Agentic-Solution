@@ -1,0 +1,40 @@
+flowchart LR
+    subgraph Collect["1. Collect (permitted sources only)"]
+        S1["Registered source<br/>+ ComplianceGate"]
+        S2["Upload CSV / JSON"]
+        S3["Demo data"]
+    end
+    subgraph Validate["2. Validate"]
+        V1["Row checks<br/>reject, never repair"]
+        V2["GTIN checksum"]
+        V3["Injection scan<br/>quarantine suspicious text"]
+    end
+    subgraph Persist["3. Persist (immutable)"]
+        P1[("observation<br/>deterministic id")]
+        P2[("evidence<br/>content-addressed")]
+    end
+    subgraph Derive["4. Derive (deterministic)"]
+        D1["Match classes + conflict guard"]
+        D2["Effective price (Decimal)"]
+        D3["Availability: unknown is not out-of-stock"]
+        D4["Signals: change, outlier, staleness"]
+    end
+    subgraph Decide["5. Recommend"]
+        R1["Recommendation + evidence ids<br/>+ assumptions"]
+        R2{"PolicyEngine"}
+    end
+    subgraph Govern["6. Govern"]
+        G1["Review, approve"]
+        G2["Dry-run execute"]
+        G3[("Audit hash chain")]
+    end
+    S1 --> V1
+    S2 --> V1
+    S3 --> V1
+    V1 --> V2 --> V3 --> P1
+    V3 --> P2
+    P1 --> D1 --> D2 --> D3 --> D4 --> R1 --> R2
+    R2 -- "pass" --> G1 --> G2
+    R2 -- "blocked" --> G3
+    G1 --> G3
+    G2 --> G3

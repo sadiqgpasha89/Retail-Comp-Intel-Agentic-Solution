@@ -1,0 +1,21 @@
+flowchart TD
+    IN(["Competitor listing"]) --> N["Normalize<br/>title, pack size, effective price"]
+    N --> T1{"Tier 1: deterministic<br/>valid GTIN match?<br/>honeypot rule?"}
+    T1 -- "GTIN resolves" --> EXACT["EXACT_MATCH<br/>tau = 1.0"]
+    T1 -- "honeypot signature" --> HP["HONEYPOT_TRAP<br/>quarantined"]
+    T1 -- "no deterministic answer" --> T2["Tier 2: bi-encoder retrieval<br/>+ cross-encoder score tau"]
+    T2 --> D2{"tau"}
+    D2 -- ">= 0.92" --> AUTO["DIRECT_SUBSTITUTE<br/>auto-commit"]
+    D2 -- "0.65 to 0.92" --> T3["Tier 3: agents<br/>Plan, Execute, Reflect, Report"]
+    D2 -- "< 0.40" --> NONE["NO_INTERNAL_EQUIVALENT"]
+    T3 --> D3{"Resolved and consistent?"}
+    D3 -- "yes" --> VERDICT["Verdict + hypothesis<br/>+ strategy suggestion"]
+    D3 -- "contradictory / low confidence" --> T4["Tier 4: human review queue"]
+    T4 --> HUMAN["Analyst decision<br/>feeds Page-Hinkley drift test"]
+    EXACT --> REC
+    AUTO --> REC
+    VERDICT --> REC
+    HUMAN --> REC
+    HP --> AUD[("Audit log")]
+    NONE --> AUD
+    REC["Recommendation (PROPOSED)"] --> GOV["Governed lifecycle<br/>see diagram 08"]

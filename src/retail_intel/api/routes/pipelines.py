@@ -148,22 +148,29 @@ async def load_real_world_dataset(req: LoadRealWorldRequest, request: Request):
 
 @router.post("/run-eval", response_model=BenchmarkRunReport)
 async def run_golden_benchmark_evaluation(request: Request):
-    """Runs automated evaluation suite against the Golden Benchmark challenge set."""
-    state = get_app_state(request)
+    """Scores the *live* pipeline against the golden benchmark set.
+
+    Every benchmark SKU is pushed through the real four-tier analysis path and the
+    resulting verdict/target is compared with ground truth. No decisions are scripted:
+    the reported accuracy is whatever the pipeline actually achieves (including misses).
+    Requires the benchmark competitor SKUs to be present in the active catalog.
+    """
+    from retail_intel.api.routes.intelligence import analyze_competitor_sku
+    from retail_intel.api.schemas import IntelligenceRequest
+
     runner = GoldenBenchmarkRunner()
-
-    simulated_decisions = {
-        "APX-AURA-99": {"verdict": "EXACT_MATCH", "target_sku": "INT-EL-001"},
-        "ZEN-TV-65-OLED": {"verdict": "DIRECT_SUBSTITUTE", "target_sku": "INT-EL-002"},
-        "APX-COF-3PK-AMBIG": {"verdict": "EXACT_MATCH", "target_sku": "INT-GROC-101"},
-        "NOV-CHAIR-ERGOPRO": {"verdict": "EQUIVALENT_PRIVATE_LABEL", "target_sku": "INT-HOME-201"},
-        "TTN-DRILL-PHANTOM": {"verdict": "UNFULFILLED_PHANTOM", "target_sku": "INT-HOME-202"},
-        "ZEN-HONEYPOT-99": {"verdict": "HONEYPOT_TRAP", "target_sku": None},
-        "ACT-RUN-AERO10": {"verdict": "DIRECT_SUBSTITUTE", "target_sku": "INT-APP-301"},
-        "APX-CLASH-NORDIC": {"verdict": "CONTRADICTORY_LISTING", "target_sku": "INT-APP-302"},
-    }
-
-    return runner.evaluate_decisions(simulated_decisions)
+    live_decisions: Dict[str, Dict[str, Any]] = {}
+    for b in runner.load_benchmarks():
+        sku = b["competitor_sku"]
+        try:
+            result = await analyze_competitor_sku(IntelligenceRequest(competitor_sku=sku), request)
+        except HTTPException:
+            continue  # SKU absent from the active catalog -> scored as MISSING (a failure)
+        live_decisions[sku] = {
+            "verdict": result.get("verdict"),
+            "target_sku": result.get("target_internal_sku"),
+        }
+    return runner.evaluate_decisions(live_decisions)
 
 
 @router.post("/run-ingest")

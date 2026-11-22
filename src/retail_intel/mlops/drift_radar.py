@@ -1,7 +1,7 @@
 """Comprehensive Drift Radar: PSI (Covariate Shift), Wasserstein (Embedding Drift), and Page-Hinkley (Concept Drift)."""
 
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 from pydantic import BaseModel, Field
@@ -18,9 +18,10 @@ class DriftReport(BaseModel):
     timestamp: float
     psi_score: float
     psi_status: str  # "STABLE", "WARNING", "CRITICAL"
-    wasserstein_embedding_distance: float
-    wasserstein_distance: float = 0.038
-    embedding_drift_status: str  # "STABLE" or "DRIFT_DETECTED"
+    # None when no embedding batch was supplied (never a made-up default).
+    wasserstein_embedding_distance: Optional[float] = None
+    wasserstein_distance: Optional[float] = None
+    embedding_drift_status: str  # "STABLE", "DRIFT_DETECTED" or "NOT_MEASURED"
     page_hinkley_statistic: float
     page_hinkley_stat: float = 0.0
     concept_drift_detected: bool
@@ -59,6 +60,8 @@ class DriftRadar:
     """Enterprise Statistical Drift Radar for Retail Competitor Feeds."""
     def __init__(self):
         self.ph_test = PageHinkleyTest(threshold=settings.page_hinkley_threshold)
+        # Reference price distribution for PSI. This is the bundled demo baseline; in a real
+        # deployment it must be replaced by a rolling window of observed prices (backlog B-12).
         self.historical_prices: List[float] = [299.99, 1799.99, 14.99, 13.99, 429.00, 129.00, 199.99, 329.99]
         self.historical_embeddings: Optional[np.ndarray] = None
 
@@ -118,8 +121,8 @@ class DriftRadar:
         else:
             psi_status = "CRITICAL"
 
-        w_dist = 0.04
-        emb_status = "STABLE"
+        w_dist: Optional[float] = None
+        emb_status = "NOT_MEASURED"
         if current_embeddings is not None and len(current_embeddings) > 0:
             w_dist, emb_status = self.evaluate_embedding_drift(current_embeddings)
 
@@ -128,7 +131,7 @@ class DriftRadar:
 
         summary = (
             f"PSI={price_psi:.3f} ({psi_status}), "
-            f"Embedding Wasserstein={w_dist:.3f} ({emb_status}), "
+            f"Embedding Wasserstein={'n/a' if w_dist is None else format(w_dist, '.3f')} ({emb_status}), "
             f"Concept PH={ph_stat:.2f} ({'DRIFT' if concept_drift else 'STABLE'})"
         )
 
@@ -136,8 +139,8 @@ class DriftRadar:
             timestamp=time.time(),
             psi_score=round(price_psi, 4),
             psi_status=psi_status,
-            wasserstein_embedding_distance=round(w_dist, 4),
-            wasserstein_distance=round(w_dist, 4),
+            wasserstein_embedding_distance=round(w_dist, 4) if w_dist is not None else None,
+            wasserstein_distance=round(w_dist, 4) if w_dist is not None else None,
             embedding_drift_status=emb_status,
             page_hinkley_statistic=round(ph_stat, 2),
             page_hinkley_stat=round(ph_stat, 2),

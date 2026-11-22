@@ -1,0 +1,40 @@
+erDiagram
+    EVIDENCE {
+        text content_hash PK
+        text media_type
+        blob content
+        text stored_at
+    }
+    OBSERVATION {
+        text observation_id PK
+        text kind
+        text tenant_id
+        text source_id
+        text competitor_id
+        text listing_id
+        text region
+        text currency
+        text observed_at
+        text retrieved_at
+        text payload_hash FK
+        int is_demo
+        int quarantined
+        text body
+    }
+    RECOMMENDATION {
+        text recommendation_id PK
+        text tenant_id
+        text status
+        text updated_at
+        text body
+    }
+    AUDIT_EVENT {
+        int seq PK
+        text event_id UK
+        text entity_id
+        text hash
+        text body
+    }
+    OBSERVATION }o--o| EVIDENCE : "payload_hash / evidence_uri"
+    RECOMMENDATION ||--o{ AUDIT_EVENT : "entity_id"
+    RECOMMENDATION }o--o{ OBSERVATION : "evidence_ids (in body)"

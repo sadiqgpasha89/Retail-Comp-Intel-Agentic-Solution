@@ -78,6 +78,12 @@ ehthumbs_vista.db
 *.swo
 
 # Project Specific
-data/
+# Seed fixtures in data/*.json are tracked on purpose; runtime artefacts are not.
+data/*.db
+data/*.sqlite*
+data/payload_store/
+data/evidence/
 logs/
 scratch/
+# Rendered-diagram tooling
+node_modules/

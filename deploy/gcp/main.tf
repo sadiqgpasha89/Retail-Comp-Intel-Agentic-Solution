@@ -18,6 +18,12 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "allow_public_access" {
+  description = "Grant allUsers the Cloud Run invoker role. The app has no real authentication yet (demo identity headers only), so keep false unless this is a throwaway demo."
+  type        = bool
+  default     = false
+}
+
 variable "app_name" {
   description = "Application Name"
   type        = string
@@ -76,8 +82,9 @@ resource "google_cloud_run_v2_service" "default" {
   depends_on = [google_project_service.run_api]
 }
 
-# Make the Cloud Run service publicly accessible (no IAM required)
+# Optional public access (off by default; see variable description)
 resource "google_cloud_run_service_iam_member" "public" {
+  count    = var.allow_public_access ? 1 : 0
   location = google_cloud_run_v2_service.default.location
   project  = google_cloud_run_v2_service.default.project
   service  = google_cloud_run_v2_service.default.name

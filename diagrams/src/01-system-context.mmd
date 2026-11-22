@@ -1,0 +1,38 @@
+flowchart LR
+    subgraph Users["People"]
+        PM["Pricing / category manager"]
+        AN["Analyst"]
+        EX["Executive"]
+        PLAT["Platform / data admin"]
+    end
+
+    subgraph AURORA["AURORA (this repository)"]
+        UI["Web console<br/>FastAPI + Three.js"]
+        API["REST + SSE API"]
+        CORE["Four-tier resolution<br/>+ governed domain layer"]
+        STORE[("Observation store<br/>SQLite, append-only")]
+    end
+
+    subgraph Inputs["Data sources (permitted only)"]
+        DEMO["Bundled synthetic demo data"]
+        UPLOAD["CSV / JSON uploads"]
+        FEEDS["Official APIs / partner feeds<br/>(adapter contract only)"]
+    end
+
+    subgraph Optional["Optional / not shipped"]
+        LLM["LLM provider (Gemini / Vertex)<br/>simulated by default"]
+        REPR["Repricer / ERP<br/>NOT implemented, writes disabled"]
+        CLOUD["GCP / AWS scaffolds<br/>unvalidated"]
+    end
+
+    PM --> UI
+    AN --> UI
+    EX --> UI
+    PLAT --> API
+    UI --> API --> CORE --> STORE
+    DEMO --> CORE
+    UPLOAD --> API
+    FEEDS -. "not implemented" .-> API
+    CORE -. "bounded calls" .-> LLM
+    CORE -. "dry-run only" .-> REPR
+    CORE -. "terraform scaffolds" .-> CLOUD

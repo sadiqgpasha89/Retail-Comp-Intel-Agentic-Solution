@@ -1,0 +1,6 @@
+# Builds docker/Dockerfile (not a root-level Dockerfile) and pushes the image.
+# Usage: gcloud builds submit --config deploy/gcp/cloudbuild.yaml --substitutions _IMAGE=<repo-url> .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "docker/Dockerfile", "-t", "${_IMAGE}", "."]
+images: ["${_IMAGE}"]

@@ -1,0 +1,25 @@
+flowchart TB
+    subgraph Untrusted["Untrusted"]
+        WEB["Competitor pages / feeds / uploads<br/>(text may contain prompt injection)"]
+        BROWSER["Browser users"]
+    end
+    subgraph Boundary["Ingestion boundary"]
+        GATE["ComplianceGate<br/>permission, rate limit, never-permitted actions"]
+        VAL["Import validation + injection scan<br/>quarantine, size limit 5 MB<br/>(importer path only)"]
+    end
+    subgraph Trusted["Trusted application zone"]
+        DET["Deterministic code<br/>prices, margins, policy"]
+        LLMB["LLM calls (simulated by default)<br/>wrap_for_llm exists but agents do not call it yet,<br/>output is a suggestion only"]
+        WF["Recommendation workflow<br/>role check + PolicyEngine"]
+        AUD[("Hash-chained audit log")]
+    end
+    subgraph Egress["Egress"]
+        WR["Downstream writes<br/>DISABLED by default,<br/>no integration shipped"]
+    end
+    WEB --> GATE --> VAL --> DET
+    DET --> LLMB
+    LLMB -- "never executes actions" --> WF
+    DET --> WF
+    BROWSER -- "demo identity headers<br/>(NOT authentication)" --> WF
+    WF --> AUD
+    WF -. "dry-run only" .-> WR

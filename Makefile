@@ -1,5 +1,6 @@
-.PHONY: help install install-gcp dev test test-unit test-integration test-coverage \
-        lint format run run-docker docker-build seed-graph eval clean
+.PHONY: help install install-gcp install-ann dev run test test-unit test-integration test-edge test-domain \
+        test-perf test-coverage lint format seed-graph eval diagrams docker-build docker-up docker-down \
+        docker-logs clean
 
 PYTHON := .venv/bin/python
 UVICORN := .venv/bin/uvicorn
@@ -45,6 +46,12 @@ test-unit: ## Run unit tests only
 test-integration: ## Run integration tests only
 	$(PYTEST) tests/integration/ -v -m integration --tb=short
 
+test-edge: ## Run edge-case matrix tests
+	$(PYTEST) tests/edge_case/ -v -m edge_case --tb=short
+
+test-domain: ## Run the dependency-light domain-layer tests (pricing, matching, observations, policy)
+	$(PYTEST) tests/unit/domain/ -v --tb=short
+
 test-coverage: ## Run tests with coverage report
 	$(PYTEST) tests/ -v --cov=retail_intel --cov-report=term-missing \
 		--cov-report=html:htmlcov --tb=short
@@ -67,6 +74,11 @@ seed-graph: ## Seed and validate the Retail Knowledge Graph
 
 eval: ## Run Golden Benchmark evaluation suite
 	PYTHONPATH=src $(PYTHON) scripts/run_golden_eval.py
+
+# ─── Diagrams ────────────────────────────────────────────────────────────────
+
+diagrams: ## Re-render diagrams/src/*.mmd to diagrams/rendered/*.svg (needs Node + @mermaid-js/mermaid-cli)
+	bash diagrams/render.sh
 
 # ─── Docker ──────────────────────────────────────────────────────────────────
 

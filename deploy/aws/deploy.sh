@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# REFERENCE ONLY / UNVALIDATED: AWS is a later adapter, not a supported deployment target.
 set -e
 
 # Configuration

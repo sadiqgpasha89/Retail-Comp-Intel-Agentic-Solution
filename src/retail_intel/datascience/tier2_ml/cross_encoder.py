@@ -1,8 +1,8 @@
-"""Cross-Encoder Re-Ranking Engine and Tri-Tier Decision Split."""
+"""Cross-Encoder Re-Ranking Engine and Decision Split (tier 2 routing)."""
 
 import re
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Dict
 
 from pydantic import BaseModel
 

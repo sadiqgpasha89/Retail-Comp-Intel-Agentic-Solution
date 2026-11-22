@@ -1,0 +1,15 @@
+flowchart TD
+    REQ(["Read request for a source"]) --> NEVER{"Action in never-permitted set?<br/>bypass auth, CAPTCHA, paywall,<br/>rate limits, checkout, purchase"}
+    NEVER -- "yes" --> DENY1["ComplianceError<br/>refused and audited"]
+    NEVER -- "no" --> TYPE{"Source type = DEMO?"}
+    TYPE -- "yes" --> OK
+    TYPE -- "no" --> PERM{"policy.permitted with a documented basis?"}
+    PERM -- "no (default)" --> DENY2["Refused: permission not established"]
+    PERM -- "yes" --> REV{"Revoked?"}
+    REV -- "yes" --> DENY3["Refused: permission revoked"]
+    REV -- "no" --> ACT{"Action in allowed_actions?"}
+    ACT -- "no" --> DENY4["Refused: action not allowed"]
+    ACT -- "yes" --> OK["Allowed"]
+    OK --> RL["Token-bucket rate limit<br/>retry with backoff"]
+    RL --> PARSE["Parse, validate, quarantine suspicious rows"]
+    PARSE --> HEALTH["Update source health + freshness SLA"]

@@ -1,6 +1,5 @@
 """Knowledge Graph controller: export visual property graph subgraph."""
 
-from typing import Any, Dict
 
 from fastapi import APIRouter, Request
 

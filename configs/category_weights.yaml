@@ -1,7 +1,7 @@
 # Category-specific multimodal weight calibration (alpha=text, beta=visual, gamma=attributes)
-# These weights are loaded at startup and override the defaults in config.py if this file is
-# explicitly referenced via the RETAIL_INTEL_CATEGORY_WEIGHTS_PATH environment variable.
-# Weights must sum to 1.0 per category.
+# REFERENCE COPY. The runtime values currently come from `category_weights` in
+# src/retail_intel/core/config.py; this file is not loaded yet (tracked as backlog item B-14 in
+# docs/CAPABILITY_MATRIX.md). Keep both in sync. Weights must sum to 1.0 per category.
 
 categories:
   apparel:

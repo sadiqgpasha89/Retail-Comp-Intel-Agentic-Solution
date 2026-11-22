@@ -1,4 +1,8 @@
-"""Model & Feature Registry: tracks versions, candidate match thresholds, and operational status."""
+"""Model & Feature Registry: tracks versions, thresholds and status.
+
+The ``metrics`` dict is empty until an evaluation run records real values; the registry never
+ships made-up quality figures. Versions/status describe the bundled demo models only.
+"""
 
 import time
 from typing import Any, Dict, List, Optional
@@ -25,7 +29,7 @@ class ModelRegistry:
                 model_version="v2.1.0",
                 model_type="bi_encoder",
                 status="PRODUCTION",
-                metrics={"recall_at_5": 0.94, "p99_latency_ms": 12.4},
+                metrics={},  # no offline evaluation recorded for the demo encoder
                 parameters={"dimension": 64, "metric": "cosine"},
             ),
             "cross_encoder": ModelArtifact(
@@ -33,7 +37,7 @@ class ModelRegistry:
                 model_version="v1.4.2",
                 model_type="cross_encoder",
                 status="PRODUCTION",
-                metrics={"pr_auc": 0.91, "f1_score": 0.89},
+                metrics={},
                 parameters={"auto_commit_threshold": 0.92, "escalation_threshold": 0.65},
             ),
             "anomaly_detector": ModelArtifact(
@@ -41,7 +45,7 @@ class ModelRegistry:
                 model_version="v1.0.1",
                 model_type="isolation_forest",
                 status="PRODUCTION",
-                metrics={"contamination": 0.05, "precision": 0.96},
+                metrics={},
                 parameters={"n_estimators": 100},
             ),
         }

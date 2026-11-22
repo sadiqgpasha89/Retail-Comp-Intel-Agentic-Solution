@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph Local["Local / Docker (the path exercised by the tests)"]
+        DC["docker-compose<br/>single api service"]
+    end
+    subgraph GCP["GCP scaffold: deploy/gcp (terraform + cloudbuild), NOT validated end to end"]
+        CB["Cloud Build<br/>cloudbuild.yaml"]
+        AR[("Artifact Registry")]
+        CR["Cloud Run service<br/>(public access is opt-in: allow_public_access)"]
+    end
+    subgraph AWS["AWS scaffold: deploy/aws, NOT validated"]
+        ECR[("ECR repository")]
+        APR["App Runner service"]
+    end
+    subgraph Config["Named in config only (no terraform, no code path yet)"]
+        PS["Pub/Sub topics"]
+        BQ[("BigQuery dataset")]
+        SPN[("Spanner graph")]
+        GCS[("GCS payload bucket")]
+        VX["Vertex AI / Gemini"]
+    end
+    DC -. "same container image" .-> CB
+    CB --> AR --> CR
+    ECR --> APR
+    CR -. "not wired" .-> Config

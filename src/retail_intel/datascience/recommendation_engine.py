@@ -34,6 +34,7 @@ class MerchandisingAction(BaseModel):
     strategic_rationale: str
     action_steps: List[str]
     guardrails: str
+    workflow_id: Optional[str] = None  # stable id of the governed Recommendation (set by the API layer)
 
 
 class RecommendationsSummary(BaseModel):
@@ -286,7 +287,7 @@ class RecommendationEngine:
                     projected_margin_pct=round(curr_margin * 100, 1),
                     financial_impact_usd=bundle_opp,
                     executive_directive=f"Create high-margin accessory bundle to unlock ${bundle_opp:,.2f} incremental revenue.",
-                    strategic_rationale=f"Attach high-margin (65% gross margin) accessory kit at $19.99 with checkout discount, neutralizing competitor single-unit price advantage while expanding total basket size.",
+                    strategic_rationale="Attach high-margin (65% gross margin) accessory kit at $19.99 with checkout discount, neutralizing competitor single-unit price advantage while expanding total basket size.",
                     action_steps=[
                         "Configure 'Frequently Bought Together' 1-click bundle discount in checkout",
                         "Offer free 2-day delivery on bundled orders above $150",

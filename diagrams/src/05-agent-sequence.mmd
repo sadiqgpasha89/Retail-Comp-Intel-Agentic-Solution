@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    participant API as /intelligence/analyze
+    participant SUP as Supervisor
+    participant MAT as Matcher agent
+    participant PRO as Promo agent
+    participant STR as Strategy agent
+    participant REF as Reflection
+    participant HQ as HITL queue
+
+    API->>SUP: execute_reasoning_flow(competitor, candidate, tau)
+    Note over SUP: Plan (step budget enforced)
+    SUP->>MAT: compare attributes, pack size, specs
+    MAT-->>SUP: verdict + confidence
+    SUP->>PRO: dissect promotion mechanics
+    PRO-->>SUP: effective price, requires_map_review
+    SUP->>STR: hypothesis + margin illustration
+    STR-->>SUP: suggested action (assumptions named)
+    SUP->>REF: self-check for contradictions
+    alt contradiction found
+        REF-->>SUP: correction applied
+    end
+    alt contradictory or low confidence
+        SUP->>HQ: enqueue task with evidence
+        SUP-->>API: ESCALATED_HITL
+    else resolved
+        SUP-->>API: TIER_3_AGENTIC verdict
+    end
+    Note over SUP,STR: LLM calls are simulated unless a provider is configured

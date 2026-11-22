@@ -1,6 +1,6 @@
 """Promotional & Cart Dissection Agent: discovers hidden basket discounts, vouchers, and MAP evasion."""
 
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -18,7 +18,7 @@ class PromoDissectionResult(BaseModel):
     cart_discount: float
     final_effective_price: float
     effective_discount_pct: float
-    is_map_policy_evaded: bool
+    requires_map_review: bool
     promotional_mechanic: str  # "BASE_ONLY", "ON_PAGE_COUPON", "DYNAMIC_BASKET_DISCOUNT", "TIERED_VOLUME"
     tools_executed: List[str] = Field(default_factory=list)
 
@@ -59,7 +59,7 @@ class PromoAgent:
             cart_discount=cart_discount,
             final_effective_price=sim_output["final_checkout_price"],
             effective_discount_pct=round(discount_pct, 2),
-            is_map_policy_evaded=sim_output["map_policy_evasion_flag"],
+            requires_map_review=sim_output["requires_map_review"],
             promotional_mechanic=mechanic,
             tools_executed=["simulate_checkout_basket"],
         )

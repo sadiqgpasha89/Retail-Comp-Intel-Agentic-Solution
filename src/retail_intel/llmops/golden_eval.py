@@ -68,6 +68,8 @@ class GoldenBenchmarkRunner:
                 "challenge_class": c_class,
                 "expected": b["expected_match_type"],
                 "actual": decision.get("verdict") if decision else "MISSING",
+                "expected_target": b["expected_target_sku"],
+                "actual_target": (decision.get("target_sku") or decision.get("internal_sku")) if decision else None,
                 "passed": is_pass,
             })
 
@@ -77,7 +79,8 @@ class GoldenBenchmarkRunner:
         }
 
         total = len(benchmarks)
-        accuracy = round(passed / total, 4) if total > 0 else 1.0
+        # An empty benchmark set is 'not measured', never a perfect score.
+        accuracy = round(passed / total, 4) if total > 0 else 0.0
 
         return BenchmarkRunReport(
             total_benchmarks=total,

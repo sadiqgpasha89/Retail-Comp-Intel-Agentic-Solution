@@ -1,6 +1,6 @@
 """Tier 1 Deterministic Rule Engine: Exact GTIN resolution, brand boundary gates, and honeypot isolation."""
 
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
 

@@ -41,6 +41,12 @@ from retail_intel.api.routes.graph import router as graph_router
 from retail_intel.api.routes.pipelines import router as pipelines_router
 from retail_intel.api.routes.recommendations import router as recommendations_router
 from retail_intel.api.routes.chaos import router as chaos_router
+from retail_intel.api.routes.governance import router as governance_router
+from decimal import Decimal
+from retail_intel.domain.audit import AuditLog
+from retail_intel.domain.recommendations import PolicyConfig, PolicyEngine, RecommendationWorkflow
+from retail_intel.domain.sources import SourceRegistry
+from retail_intel.domain.store import ObservationStore
 
 configure_logging(settings.log_level)
 logger = get_logger("api.main")
@@ -73,6 +79,21 @@ class ApplicationState:
         self.hitl_queue = HITLReviewQueue()
         self.metrics_engine = MetricsEngine()
         self.drift_radar = DriftRadar()
+
+        # Governed domain layer: immutable observations, hash-chained audit, recommendation lifecycle.
+        self.observations = ObservationStore(settings.observation_db_path)
+        self.audit_log = AuditLog(sink=self.observations)      # append-only table, hash-chained
+        self.source_registry = SourceRegistry()
+        self.workflow = RecommendationWorkflow(
+            audit=self.audit_log,
+            policy=PolicyEngine(PolicyConfig(
+                min_margin_pct=Decimal(str(settings.min_gross_margin_pct)),
+                max_change_pct=Decimal(str(settings.max_price_change_pct)),
+            )),
+            store=self.observations,
+            integration=None,                      # no write integration is shipped (ADR-007)
+            writes_enabled=settings.writes_enabled,
+        )
 
 
 @asynccontextmanager
@@ -120,7 +141,7 @@ def create_app() -> FastAPI:
     """Application factory — enables clean testing and multi-worker deployments."""
     _app = FastAPI(
         title="Retail Competitor Intelligence — Autonomous Hybrid Platform",
-        version="1.1.0",
+        version="1.2.0",
         lifespan=lifespan,
     )
 
@@ -146,6 +167,7 @@ def create_app() -> FastAPI:
     _app.include_router(pipelines_router)
     _app.include_router(recommendations_router)
     _app.include_router(chaos_router)
+    _app.include_router(governance_router)
 
     # 4. Static files & Jinja2 templates
     frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
@@ -184,7 +206,7 @@ def create_app() -> FastAPI:
         if jinja_env:
             template = jinja_env.get_template("index.html")
             return HTMLResponse(template.render(
-                app_name="AuraIntel | Enterprise Retail Competitor Intelligence",
+                app_name="AURORA | Retail Competitor Intelligence",
                 execution_mode=settings.execution_mode.value,
             ))
         return HTMLResponse("<h1>Retail Competitor Intelligence Dashboard (Template loading...)</h1>")

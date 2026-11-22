@@ -1,7 +1,6 @@
 """Integration tests for end-to-end data pipeline: Ingest -> Normalize -> Vector Search -> Tri-Tier Split."""
 
 import pytest
-from retail_intel.data_engineering.ingestion.ingestion_pipeline import IngestionPipeline
 from retail_intel.data_engineering.normalization.normalization_pipeline import NormalizationPipeline
 from retail_intel.data_engineering.feature_store.feature_store import FeatureStore
 from retail_intel.datascience.tier1_rules.deterministic_engine import DeterministicRuleEngine

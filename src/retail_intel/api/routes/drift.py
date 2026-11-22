@@ -14,5 +14,9 @@ router = APIRouter(prefix="/api/v1/drift", tags=["drift"])
 async def get_drift_status(request: Request):
     """Returns current statistical drift report across price distribution, embeddings, and concepts."""
     state = get_app_state(request)
-    prices = [c.get("final_effective_price", 100.0) for c in state.competitor_raw_list]
+    prices = [
+        c["final_effective_price"]
+        for c in state.competitor_raw_list
+        if c.get("final_effective_price") is not None
+    ]
     return state.drift_radar.run_comprehensive_audit(current_prices=prices)

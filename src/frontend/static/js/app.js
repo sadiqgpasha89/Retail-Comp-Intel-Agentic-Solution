@@ -32,7 +32,7 @@ const tourSteps = [
     mode: 'stakeholder',
     tab: 'matching',
     badge: 'STEP 3/6',
-    title: 'Tri-Tier Hybrid Intelligence Resolution Console',
+    title: 'Four-Tier Hybrid Resolution Console',
     description: 'Deterministic Rules (τ=1.0) → Classical ML (τ≥0.92) → Multi-Agent Arbiter (0.65≤τ<0.92) → HITL Queue.'
   },
   {
@@ -47,7 +47,7 @@ const tourSteps = [
     tab: 'stages',
     badge: 'STEP 5/6',
     title: 'End-to-End 6-Stage Operational Lifecycle',
-    description: 'Stage 1 (Perimeter Discovery) through Stage 6 (Dynamic Repricer & ERP Action Orchestration).'
+    description: 'Stage 1 (Perimeter Discovery) through Stage 6 (Recommendation workflow: review, approval, dry-run; downstream writes disabled).'
   },
   {
     mode: 'telemetry',
@@ -314,8 +314,8 @@ function renderRecommendations(data) {
         <button class="btn btn-primary btn-xs" onclick="startStreamingAnalysis('${rec.competitor_sku}')">
           ⚡ Audit with Multi-Agents & Stream Thoughts
         </button>
-        <button class="btn btn-secondary btn-xs" id="btn-approve-${rec.recommendation_id}" onclick="approveRecommendation('${rec.recommendation_id}', '${rec.action_type}', '${rec.internal_sku}', ${rec.recommended_price})">
-          ✅ Push to Repricer
+        <button class="btn btn-secondary btn-xs" id="btn-approve-${rec.workflow_id}" onclick="approveRecommendation('${rec.workflow_id}', '${rec.action_type}', '${rec.internal_sku}', ${rec.recommended_price})">
+          ✅ Approve (policy-checked)
         </button>
       </div>
     `;
@@ -328,38 +328,50 @@ function formatActionName(actionType) {
   return actionType.replace(/_/g, ' ');
 }
 
-async function approveRecommendation(recId, actionType, targetSku, approvedPrice) {
-  const btn = document.getElementById(`btn-approve-${recId}`);
+// Demo identity for the audit trail. This is NOT authentication (see docs/CAPABILITY_MATRIX.md, B-01).
+const DEMO_ACTOR_HEADERS = { 'Content-Type': 'application/json', 'X-Actor-Id': 'demo.pricing_manager', 'X-Actor-Role': 'pricing_manager' };
+
+async function approveRecommendation(workflowId, actionType, targetSku, approvedPrice) {
+  const btn = document.getElementById(`btn-approve-${workflowId}`);
   if (btn) {
     btn.disabled = true;
-    btn.innerText = 'Dispatching...';
+    btn.innerText = 'Checking policy...';
   }
+  const post = (path, body) => fetch(`/api/v1/recommendations/${workflowId}/${path}`, {
+    method: 'POST', headers: DEMO_ACTOR_HEADERS, body: JSON.stringify(body || {})
+  });
   try {
-    const res = await fetch('/api/v1/recommendations/approve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        recommendation_id: recId,
-        action_type: actionType,
-        target_sku: targetSku,
-        approved_price: approvedPrice
-      })
-    });
+    let res = await post('review', { notes: 'Reviewed from dashboard (demo identity)' });
+    if (res.ok || res.status === 409) {           // 409: already reviewed earlier
+      res = await post('approve', { notes: 'Approved from dashboard (demo identity)' });
+    }
     if (res.ok) {
+      const dry = await (await post('execute', { idempotency_key: `ui-${workflowId}`, dry_run: true })).json();
       if (btn) {
         btn.className = 'btn btn-xs';
         btn.style.background = 'rgba(16, 185, 129, 0.2)';
         btn.style.color = '#10b981';
         btn.style.borderColor = '#10b981';
-        btn.innerText = '✓ Dispatched to ERP';
+        btn.innerText = '✓ Approved (dry-run only)';
       }
-      alert(`Directive Approved: ${recId} for SKU ${targetSku} ($${approvedPrice.toFixed(2)}) dispatched to Dynamic Repricer & ERP with margin guardrails confirmed.`);
+      alert(`Approved: ${workflowId} for SKU ${targetSku} at $${approvedPrice.toFixed(2)}.\n` +
+            `Nothing was sent downstream: writes are disabled. Dry run: ${JSON.stringify(dry.would_apply || dry)}`);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      const detail = err.detail && err.detail.violations
+        ? err.detail.violations.map(v => `${v.code}: ${v.message}`).join('\n')
+        : (err.detail || res.statusText);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = '✅ Approve (policy-checked)';
+      }
+      alert(`Not approved:\n${detail}`);
     }
   } catch (err) {
     console.error('Approval failed:', err);
     if (btn) {
       btn.disabled = false;
-      btn.innerText = '✅ Push to Repricer';
+      btn.innerText = '✅ Approve (policy-checked)';
     }
   }
 }
@@ -1460,7 +1472,7 @@ async function runGoldenEval() {
     const view = document.getElementById('benchmark-results-view');
     const tbody = document.getElementById('benchmark-table-body');
     if (view) view.style.display = 'block';
-    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;"><span class="spinner" style="display:inline-block; margin-right:8px;"></span> Executing live Tri-Tier evaluations across Curated Ground Truth Benchmark Suite...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;"><span class="spinner" style="display:inline-block; margin-right:8px;"></span> Running the live pipeline against the golden benchmark set...</td></tr>';
 
     const res = await fetch('/api/v1/pipelines/run-eval', { method: 'POST' });
     const data = await res.json();
@@ -1776,9 +1788,9 @@ async function fetchDriftStatus() {
     if (psiVal && data.psi_score !== undefined) {
       psiVal.innerText = data.psi_score.toFixed(3);
     }
-    const wDist = data.wasserstein_embedding_distance ?? data.wasserstein_distance ?? 0.038;
+    const wDist = data.wasserstein_embedding_distance ?? data.wasserstein_distance;
     if (wasVal) {
-      wasVal.innerText = Number(wDist).toFixed(3);
+      wasVal.innerText = (wDist === null || wDist === undefined) ? 'n/a' : Number(wDist).toFixed(3);
     }
     const ph = data.page_hinkley_statistic ?? data.page_hinkley_stat ?? 0.0;
     if (phVal) {

@@ -1,0 +1,53 @@
+flowchart TB
+    subgraph Presentation
+        FE["src/frontend<br/>templates + app.js"]
+    end
+    subgraph API["retail_intel.api"]
+        R1["routes: intelligence, catalog, metrics, drift, graph, hitl, pipelines, chaos"]
+        R2["routes: recommendations (lifecycle)"]
+        R3["routes: governance (audit, sources, imports, history)"]
+        MW["middleware: correlation id"]
+    end
+    subgraph Pipeline["Resolution pipeline"]
+        NORM["data_engineering.normalization"]
+        T1["datascience.tier1_rules<br/>GTIN + honeypot rules"]
+        T2["datascience.tier2_ml<br/>bi-encoder, cross-encoder, Isolation Forest"]
+        AG["agents: Supervisor, Matcher, Promo, Strategy, Reflection"]
+        HITL["hitl.review_queue"]
+        KG["agents.graph.knowledge_graph (NetworkX)"]
+        FS["data_engineering.feature_store"]
+    end
+    subgraph Domain["retail_intel.domain (governed layer)"]
+        MC["match_classes"]
+        PR["pricing (Decimal effective price)"]
+        AV["availability"]
+        OB["observations + provenance"]
+        SG["signals"]
+        RC["recommendations<br/>lifecycle + PolicyEngine"]
+        AU["audit (hash chain)"]
+        SRC["sources (ComplianceGate, importer)"]
+        SF["safety (prompt-injection scan)"]
+        ST["store (SQLite)"]
+    end
+    subgraph Ops["Observability"]
+        ME["metrics.engine (measured only)"]
+        DR["mlops.drift_radar"]
+        GE["llmops.golden_eval"]
+        GR["llmops.guardrails"]
+    end
+
+    FE --> MW --> R1
+    MW --> R2
+    MW --> R3
+    R1 --> NORM --> T1 --> T2 --> AG --> HITL
+    T2 --> FS
+    AG --> KG
+    R2 --> RC
+    R3 --> SRC --> OB --> ST
+    RC --> AU --> ST
+    RC --> ST
+    SRC --> SF
+    R1 --> ME
+    R1 --> DR
+    R1 --> GE
+    AG --> GR

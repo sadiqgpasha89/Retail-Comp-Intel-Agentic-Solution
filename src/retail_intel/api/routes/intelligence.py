@@ -1,15 +1,15 @@
-"""Intelligence route: orchestrates the Tri-Tier Hybrid Intelligence Pipeline with SSE streaming."""
+"""Intelligence route: orchestrates the Four-Tier Hybrid Intelligence Pipeline with SSE streaming."""
 
 import json
 import time
 from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 
 from retail_intel.core.logging import get_logger
 from retail_intel.api.dependencies import get_app_state
-from retail_intel.api.schemas import IntelligenceRequest, IntelligenceResponse
+from retail_intel.api.schemas import IntelligenceRequest
 from retail_intel.data_engineering.normalization.normalization_pipeline import NormalizedProductRecord
 from retail_intel.datascience.tier1_rules.deterministic_engine import RuleResolution
 from retail_intel.datascience.tier2_ml.cross_encoder import DecisionSplit
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/api/v1/intelligence", tags=["intelligence"])
 @router.post("/analyze")
 async def analyze_competitor_sku(req: IntelligenceRequest, request: Request):
     """
-    Executes the complete Tri-Tier Hybrid Resolution Pipeline:
+    Executes the complete Four-Tier Hybrid Resolution Pipeline:
       Tier 1: Deterministic GTIN + honeypot rules
       Tier 2: Bi-Encoder retrieval + Cross-Encoder scoring
       Tier 3: Multi-agent AI arbitration (if 0.65 <= tau < 0.92)
@@ -58,7 +58,7 @@ async def analyze_competitor_sku(req: IntelligenceRequest, request: Request):
         )
 
         duration = round((time.time() - t0) * 1000, 2)
-        state.metrics_engine.record_analysis(verdict=rule_res.verdict or "RESOLVED")
+        state.metrics_engine.record_analysis(verdict=rule_res.verdict or "RESOLVED", duration_ms=duration)
         return {
             "competitor_sku": comp_rec.sku,
             "resolution_tier": "TIER_1_DETERMINISTIC",
@@ -76,9 +76,7 @@ async def analyze_competitor_sku(req: IntelligenceRequest, request: Request):
         }
 
     # 3. TIER 2: Classical ML (Bi-Encoder + Cross-Encoder)
-    t_ret_start = time.time()
     candidates = state.bi_encoder.retrieve_candidates(comp_rec, top_k=req.top_k_candidates)
-    retrieval_latency_ms = round((time.time() - t_ret_start) * 1000, 2)
 
     scored_candidates = []
     top_candidate = None
@@ -117,7 +115,7 @@ async def analyze_competitor_sku(req: IntelligenceRequest, request: Request):
     # Tier 2 auto-commit (tau >= 0.92)
     if best_score.decision == DecisionSplit.AUTO_COMMIT and not req.force_agentic:
         duration = round((time.time() - t0) * 1000, 2)
-        state.metrics_engine.record_analysis(verdict="DIRECT_SUBSTITUTE")
+        state.metrics_engine.record_analysis(verdict="DIRECT_SUBSTITUTE", duration_ms=duration)
         return {
             "competitor_sku": comp_rec.sku,
             "resolution_tier": "TIER_2_CLASSICAL_ML",
@@ -163,6 +161,7 @@ async def analyze_competitor_sku(req: IntelligenceRequest, request: Request):
         gross_margin_protected=intelligence.strategy.gross_margin_protected_usd,
         reflection_applied=intelligence.resolution.reflection_applied,
         tool_success=len(intelligence.resolution.tools_executed),
+        duration_ms=duration,
     )
 
     return {

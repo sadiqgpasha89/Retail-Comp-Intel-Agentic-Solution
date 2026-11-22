@@ -6,11 +6,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from retail_intel.api.main import app, ApplicationState
-from retail_intel.core.config import settings
-from retail_intel.data_engineering.normalization.normalization_pipeline import NormalizationPipeline
-from retail_intel.data_engineering.feature_store.feature_store import FeatureStore
-from retail_intel.datascience.tier1_rules.deterministic_engine import DeterministicRuleEngine
+from retail_intel.api.main import app
 
 
 @pytest.fixture(scope="session")

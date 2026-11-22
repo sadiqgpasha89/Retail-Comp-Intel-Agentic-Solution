@@ -1,6 +1,5 @@
 """Versioned prompt templates for multi-agent reasoning and orchestration."""
 
-from typing import Dict
 
 
 class PromptRegistry:

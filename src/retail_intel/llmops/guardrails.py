@@ -1,15 +1,17 @@
 """LLM & RAG Quality Guardrails: calculates Faithfulness, Context Precision/Recall, and Hallucination Rate."""
 
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
 
 class QualityAuditResult(BaseModel):
     faithfulness_score: float  # 0.0 to 1.0 (Groundedness)
-    context_precision: float
-    context_recall: float
+    # Heuristic proxy only (token overlap), not a RAG-benchmark score. Precision/recall need a labelled
+    # set of facts that should have been cited, so they are reported as None.
+    context_precision: Optional[float] = None
+    context_recall: Optional[float] = None
     hallucination_rate: float
     is_safe: bool
     unsupported_claims: List[str] = Field(default_factory=list)
@@ -22,13 +24,13 @@ class LLMGuardrails:
     def audit_reasoning_groundedness(
         reasoning_text: str, source_facts: Dict[str, Any]
     ) -> QualityAuditResult:
-        """Evaluates whether statements made by an agent are strictly grounded in source payload facts."""
+        """Heuristic token-overlap check of whether statements are grounded in source facts.
+
+        This is a cheap screening signal, not a faithfulness benchmark."""
         sentences = [s.strip() for s in re.split(r"[.\n]", reasoning_text) if len(s.strip()) > 8]
         if not sentences:
             return QualityAuditResult(
                 faithfulness_score=1.0,
-                context_precision=1.0,
-                context_recall=1.0,
                 hallucination_rate=0.0,
                 is_safe=True,
             )
@@ -54,13 +56,9 @@ class LLMGuardrails:
         faithfulness = grounded_count / len(sentences)
         hallucination_rate = len(unsupported) / len(sentences)
 
-        context_precision = round(min(1.0, faithfulness + 0.05), 4)
-        context_recall = 0.92
 
         return QualityAuditResult(
             faithfulness_score=round(faithfulness, 4),
-            context_precision=context_precision,
-            context_recall=context_recall,
             hallucination_rate=round(hallucination_rate, 4),
             is_safe=hallucination_rate <= 0.15,
             unsupported_claims=unsupported,

@@ -1,6 +1,6 @@
 """Pydantic request/response schemas for the Retail Competitor Intelligence API."""
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
